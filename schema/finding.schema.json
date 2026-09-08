@@ -2,49 +2,100 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "finding.schema.json",
   "title": "Finding",
+  "description": "ウォッチ系タスクが、外に残す価値があると判断した1件の発見・変化を表す。",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "date", "title", "summary", "topicIds", "sources"],
+  "required": ["id", "date", "title", "summary", "watch", "sources"],
   "properties": {
     "id": {
       "type": "string",
+      "description": "Findingを一意に識別するID。",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "date": {
       "type": "string",
+      "description": "このFindingを観測・記録した日。",
       "format": "date"
     },
     "title": {
       "type": "string",
+      "description": "何が起きたかを短く表す見出し。",
       "minLength": 1
     },
     "summary": {
       "type": "string",
+      "description": "確認できた事実や変化の要約。",
       "minLength": 1
     },
     "whyItMatters": {
-      "type": "string"
+      "type": "string",
+      "description": "このFindingを残す価値があると判断した理由や所感。"
     },
-    "topicIds": {
+    "status": {
+      "type": "string",
+      "description": "必要な場合だけ付ける、その時点の実用上の判断。",
+      "enum": ["TRY", "WATCH", "HOLD"]
+    },
+    "watch": {
+      "type": "object",
+      "description": "このFindingを生成したウォッチ。",
+      "additionalProperties": false,
+      "required": ["id", "title"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ウォッチを安定して識別するID。",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "description": "人間向けのウォッチ名。",
+          "minLength": 1
+        }
+      }
+    },
+    "tags": {
       "type": "array",
+      "description": "後から検索や分類に使う任意のタグ。",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "relatedFindingIds": {
+      "type": "array",
+      "description": "過去の判断変更や同じ流れの更新など、関連するFindingのID。",
       "items": {
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
-      "minItems": 1,
       "uniqueItems": true
     },
     "sources": {
       "type": "array",
+      "description": "このFindingの根拠となる情報源。",
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["title", "url"],
         "properties": {
-          "title": { "type": "string", "minLength": 1 },
-          "url": { "type": "string", "format": "uri" },
-          "publisher": { "type": "string" },
-          "publishedAt": { "type": "string", "format": "date-time" }
+          "title": {
+            "type": "string",
+            "description": "情報源のタイトル。",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "description": "情報源のURL。",
+            "format": "uri"
+          },
+          "publisher": {
+            "type": "string",
+            "description": "発行元・提供元。"
+          },
+          "publishedAt": {
+            "type": "string",
+            "description": "情報源の公開日時。分かる場合のみ指定する。",
+            "format": "date-time"
+          }
         }
       },
       "minItems": 1
