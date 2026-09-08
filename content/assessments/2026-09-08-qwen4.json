@@ -1,0 +1,17 @@
+{
+  "id": "2026-09-08-qwen4",
+  "topicId": "qwen4",
+  "date": "2026-09-08",
+  "status": "WATCH",
+  "rationale": "Track Qwen4 primarily as an architectural observation point rather than as a release to test by default. The interesting signal is whether stronger models adopt mechanisms that change information flow, internal reasoning, inference-time learning, or long-term state handling in a materially useful way.",
+  "findingIds": [],
+  "blockers": [
+    "The architecture is still a moving target.",
+    "Novel mechanisms are not actionable until their implementation and local-runtime implications are clear."
+  ],
+  "reevaluationTriggers": [
+    "Official architecture details show a substantive change in reasoning or state handling.",
+    "Open weights or credible implementation evidence make the design inspectable.",
+    "MLX, llama.cpp, or another relevant runtime exposes meaningful local-inference implications."
+  ]
+}
