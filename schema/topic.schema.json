@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://daily-findings.example/schema/topic.schema.json",
+  "$id": "topic.schema.json",
   "title": "Topic",
   "type": "object",
   "additionalProperties": false,
