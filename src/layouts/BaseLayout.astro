@@ -1,0 +1,33 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "daily-findings",
+  description = "AIやローカル推論などのウォッチから残したFindingのログ。",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="site-name" href="/">daily-findings</a>
+        <p class="site-description">AIやローカル推論などのウォッチから残したFinding。</p>
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>
