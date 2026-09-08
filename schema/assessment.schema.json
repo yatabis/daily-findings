@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "assessment.schema.json",
+  "title": "Assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "topicId", "date", "status", "rationale"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "topicId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "$ref": "status.schema.json"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "findingIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "reevaluationTriggers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "previousAssessmentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    }
+  }
+}
