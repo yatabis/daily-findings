@@ -1,58 +1,76 @@
 # daily-findings
 
-A public, opinionated log of notable AI findings and changing assessments.
+AIまわりの各種ウォッチから、**報告する価値があると判断したものだけ**を残す公開ログです。
 
-This is not a comprehensive AI news feed. The value is in the filter: what is worth noticing, why it matters, what is not worth trying yet, and what would change that assessment.
+網羅的なAIニュース一覧を作ることは目的にしません。何を拾い、何を捨て、なぜそれを重要だと見たのかというフィルタそのものを含めて記録します。
 
-## Principles
+## 基本方針
 
-- Prefer meaningful deltas over release volume.
-- Keep the observer's baseline and bias visible instead of pretending to be neutral.
-- Separate facts, interpretation, and current assessment.
-- Preserve changes of mind over time rather than rewriting history.
-- Make the same underlying information useful to both humans and agents.
-- Do not publish noise just to satisfy a daily cadence; some days may have no findings.
+- 新着件数ではなく、意味のある差分を優先する。
+- 何も重要な変化がなければ、何も追加しない。
+- 一般的な中立性を装わず、観測者の環境・関心・判断基準を前提として扱う。
+- 事実と所感は区別するが、所感を排除しない。
+- 同じ情報を、人間向けUI・API・WebMCPなど複数の形で利用できるようにする。
 
-## Content model
+## 運用イメージ
 
-The repository starts with three deliberately small concepts:
+現在ChatGPTで動かしている各種ウォッチ系スケジュールタスクの出力を、このリポジトリへ蓄積していくことを想定しています。
 
-- **Topic** — a model, architecture, runtime, technique, tool, or other subject being tracked.
-- **Finding** — new evidence or a meaningful change that is worth recording.
-- **Assessment** — an evaluation of a topic at a particular point in time.
+```text
+ウォッチ実行
+  ↓
+重要な変化があるか判定
+  ├─ ない → 何も追加しない
+  └─ ある → Finding を1件以上追加
+```
 
-Assessments use a small status vocabulary:
+先生がFindingごとに手作業で評価を書くことは前提にしません。ウォッチ自身がすでに行っている選別・要約・必要に応じた評価を、そのまま公開可能な形へ落とします。
 
-- `TRY` — worth spending time to evaluate now.
-- `WATCH` — important enough to track, but not worth acting on yet.
-- `HOLD` — promising, but blocked by a concrete issue.
-- `EXCLUDE` — not worth further attention unless something materially changes.
+## Finding
 
-A **reevaluation trigger** records what would cause the current judgment to be revisited.
+現時点では、公開データの中心を **Finding** ひとつに絞ります。
 
-## Layout
+Findingは「あるウォッチが、ある時点で、外に残す価値があると判断したもの」です。
+
+主に次の情報を持ちます。
+
+- どのウォッチから出たか
+- いつ観測したか
+- 何が起きたか
+- なぜ気になったか
+- 必要なら現在の判断（`TRY` / `WATCH` / `HOLD`）
+- 情報源
+- 後から関連付けるためのタグや関連Finding
+
+`status` はFindingに対する、その時点の実用上の判断です。すべてのFindingに必須とはしません。
+
+- `TRY` — 今、自分の時間を使って試す価値がある。
+- `WATCH` — 今すぐ試す必要はないが、今後を見る価値がある。
+- `HOLD` — 有望だが、具体的な阻害要因がある。
+
+`EXCLUDE` は公開データには原則残しません。除外されたものは、そもそもFindingとして出さない運用を基本にします。
+
+判断が後から変わった場合も、過去のFindingを書き換える必要はありません。新しい変化が起きた時点で新しいFindingを追加し、必要なら過去のFindingと関連付けます。
+
+## Topic / Assessment について
+
+最初の案では `Topic` と `Assessment` を独立したデータとして考えていましたが、MVPでは採用しません。
+
+- `Topic` は粒度を先に固定すると運用を縛りやすい。
+- `Assessment` を独立させると、ADRのような継続的な判断記録を要求してしまう。
+- 現在のウォッチ運用では、そこまで厳密な手作業を前提にしないほうが自然。
+
+必要になった場合は、蓄積したFindingから実際の利用パターンを見て後から導入します。
+
+## ディレクトリ
 
 ```text
 content/
-  topics/
   findings/
-  assessments/
 schema/
-  status.schema.json
-  topic.schema.json
   finding.schema.json
-  assessment.schema.json
 ```
 
-The content files are intended to remain the source of truth. A website, feeds, JSON APIs, WebMCP tools, AEO experiments, analytics, and other projections can be built on top without redefining the underlying information model.
+コンテンツをsource of truthとし、Webサイト、フィード、JSON API、WebMCP、AEO向けデータ、分析などはその上に構築します。
 
-## Initial scope
-
-Keep the first version intentionally small:
-
-1. Track a handful of topics.
-2. Record findings only when a meaningful delta appears.
-3. Append assessments instead of overwriting historical judgment.
-4. Expose the same information to humans and agents.
-
-Framework, Cloudflare runtime details, storage, analytics, and automation are intentionally left open until the content model proves useful.
+Cloudflareの構成やWebフレームワーク、ストレージ方式などは、まだ固定しません。
