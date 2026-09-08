@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "finding.schema.json",
+  "title": "Finding",
+  "description": "保存・公開する価値があると判断した1件の発見・変化を表す。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "date", "title", "summary", "status", "sources"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Findingを一意に識別するID。",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "description": "このFindingを観測・記録した日。",
+      "format": "date"
+    },
+    "title": {
+      "type": "string",
+      "description": "何が起きたかを短く表す見出し。",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "description": "確認できた事実や変化の要約。",
+      "minLength": 1
+    },
+    "whyItMatters": {
+      "type": "string",
+      "description": "このFindingを残す価値があると判断した理由や所感。"
+    },
+    "status": {
+      "type": "string",
+      "description": "このFindingの現時点での扱い。",
+      "enum": ["TRY", "WATCH", "HOLD"]
+    },
+    "tags": {
+      "type": "array",
+      "description": "後から検索や分類に使う任意のタグ。",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "relatedFindingIds": {
+      "type": "array",
+      "description": "過去の判断変更や同じ流れの更新など、関連するFindingのID。",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "sources": {
+      "type": "array",
+      "description": "このFindingの根拠となる情報源。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "情報源のタイトル。",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "description": "情報源のURL。",
+            "format": "uri"
+          },
+          "publisher": {
+            "type": "string",
+            "description": "発行元・提供元。"
+          },
+          "publishedAt": {
+            "type": "string",
+            "description": "情報源の公開日時。分かる場合のみ指定する。",
+            "format": "date-time"
+          }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}
