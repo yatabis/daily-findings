@@ -2,10 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "finding.schema.json",
   "title": "Finding",
-  "description": "ウォッチ系タスクが、外に残す価値があると判断した1件の発見・変化を表す。",
+  "description": "保存・公開する価値があると判断した1件の発見・変化を表す。",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "date", "title", "summary", "watch", "sources"],
+  "required": ["id", "date", "title", "summary", "status", "sources"],
   "properties": {
     "id": {
       "type": "string",
@@ -33,26 +33,8 @@
     },
     "status": {
       "type": "string",
-      "description": "必要な場合だけ付ける、その時点の実用上の判断。",
+      "description": "このFindingの現時点での扱い。",
       "enum": ["TRY", "WATCH", "HOLD"]
-    },
-    "watch": {
-      "type": "object",
-      "description": "このFindingを生成したウォッチ。",
-      "additionalProperties": false,
-      "required": ["id", "title"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "ウォッチを安定して識別するID。",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-        },
-        "title": {
-          "type": "string",
-          "description": "人間向けのウォッチ名。",
-          "minLength": 1
-        }
-      }
     },
     "tags": {
       "type": "array",
