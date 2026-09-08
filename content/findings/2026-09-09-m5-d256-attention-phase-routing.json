@@ -1,0 +1,31 @@
+{
+  "id": "mlx-m5-d256-attention-phase-routing",
+  "date": "2026-09-09",
+  "title": "M5のD256 attentionはprefillとdecodeで異なる最適kernel領域がある",
+  "summary": "MLXのdraft PR #4476は、D256 causal attentionの短いprefill（fp16/bf16、query 512〜1023、key最大1536）をNAX split-head-dimension kernelへ広げ、M5 Maxのoperator測定で約1.07〜1.38倍を報告した。key長1537のcontrolはほぼ中立だった。PR #4477は同じD256でGQA=8のsingle-token decode、key長8192以上にtwo-pass vector kernelを追加し約1.11〜1.18倍。どちらも通常の浮動小数点KV cacheが対象で、whole-model throughputは未測定。",
+  "whyItMatters": "同じhead_dimでもprefillとdecode、さらにcontext境界で最適kernelが変わることが明瞭になった。M5 Ultra実機で phase・qL・kL・dtype・GQA比・KV形式を掃くautotunerを早期に作り、correctness gate後にcrossover tableを生成する価値がある。",
+  "status": "TRY",
+  "tags": [
+    "apple-silicon",
+    "mlx",
+    "m5",
+    "attention",
+    "nax",
+    "gqa",
+    "autotuning"
+  ],
+  "sources": [
+    {
+      "title": "Use NAX attention for short causal D256 prefill",
+      "url": "https://github.com/ml-explore/mlx/pull/4476",
+      "publisher": "ml-explore/mlx (GitHub)",
+      "publishedAt": "2026-09-08T11:18:32Z"
+    },
+    {
+      "title": "Add D256 to GQA-8 two-pass vector attention",
+      "url": "https://github.com/ml-explore/mlx/pull/4477",
+      "publisher": "ml-explore/mlx (GitHub)",
+      "publishedAt": "2026-09-08T11:18:34Z"
+    }
+  ]
+}

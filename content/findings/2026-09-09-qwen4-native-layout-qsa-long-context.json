@@ -1,0 +1,25 @@
+{
+  "id": "mlx-qwen4-native-layout-qsa-long-context",
+  "date": "2026-09-09",
+  "title": "Qwen3.8長文QSAはKVの物理レイアウトを崩さないgatherで大幅に伸びる",
+  "summary": "oMLX PR #3520 は Qwen3.8-Flash-Next の gathered QSA で、各stepにKV全体をtranspose+reshapeしていた経路を、保存レイアウトのtoken軸から直接 mx.take する方式へ変更した。M5 Maxでは206K tokenのcacheでQSA 1 layer・1 tokenあたり1.83msから0.27msへ短縮。さらに長文のtext-only decodeとMTP verifyをgathered QSAへ通し、serial decodeは63K/134K/229Kで約+8%/+19%/+30%、greedyのadaptive MTPは約+13%/+34%/+40%を報告している。損益分岐はserial・sampled MTP・greedy MTPで異なる。",
+  "whyItMatters": "自前MLX runtimeでは、sparse attentionの前処理で物理cache layoutを壊さないことを原則にし、text-only等の意味的な事実はtensor値から毎step推定せずscheduler metadataとして運ぶ価値がある。またQSA routeの閾値はcontext長だけでなくphase・sampling・speculation depthを含むExecutionPlanのdispatch keyにすべきという具体的な実測になる。",
+  "status": "TRY",
+  "tags": [
+    "apple-silicon",
+    "mlx",
+    "qwen3.8",
+    "qsa",
+    "long-context",
+    "mtp",
+    "scheduling"
+  ],
+  "sources": [
+    {
+      "title": "perf(qwen4_exp): long-context decode and MTP verify rows on the gathered QSA arms",
+      "url": "https://github.com/jundot/omlx/pull/3520",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-09-08T08:09:48Z"
+    }
+  ]
+}

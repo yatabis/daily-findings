@@ -1,0 +1,25 @@
+{
+  "id": "omlx-reasoning-output-cache-transcript-identity",
+  "date": "2026-09-09",
+  "title": "Reasoning系agentのprefix cacheは出力種別ではなく再レンダリング同一性で決めるべき",
+  "summary": "oMLX PR #3525 は、次ターンのchat historyがthinking/reasoningを保持する場合にpromptだけでなく生成outputもprefix cacheへ保存する。M5 MaxのQwen3.8-Flash-Nextで3126-token promptと6000-token answerを使った2-turn probeでは、従来2048 tokenだけだった保存・再利用が8192 tokenまで増えた。tool-callで終わるturnにも同じ規則を適用する。また短いpromptではMTPのblock-boundary alignmentが最初のcaptureまでarmされず、2048境界が2047/2049へずれることがある問題も、request追加時にalignmentをarmすることで修正している。",
+  "whyItMatters": "coding-agent loopでは長いreasoningやtool callの再prefillを避けられる。cacheabilityは「reasoningか否か」ではなく、次のpromptがそのtoken列を同一に再レンダリングするかというtranscript identityで判定する方が一般化しやすい。state checkpointの境界契約もdecode中に遅延初期化せずrequest開始時点で確立すべきだと分かる。",
+  "status": "TRY",
+  "tags": [
+    "apple-silicon",
+    "mlx",
+    "prefix-cache",
+    "reasoning",
+    "agent-loop",
+    "mtp",
+    "state"
+  ],
+  "sources": [
+    {
+      "title": "fix(cache): keep a reasoning request's output cacheable when the history preserves it",
+      "url": "https://github.com/jundot/omlx/pull/3525",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-09-08T12:01:26Z"
+    }
+  ]
+}
