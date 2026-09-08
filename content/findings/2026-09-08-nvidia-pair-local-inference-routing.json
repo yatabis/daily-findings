@@ -1,0 +1,27 @@
+{
+  "id": "nvidia-pair-local-inference-routing",
+  "date": "2026-09-08",
+  "title": "NVIDIA PAIRがApple M4+を含む複数ローカル推論ノードのリクエストルーティングを公開",
+  "summary": "NVIDIA Personal AI Router (PAIR) は、同一LAN上のOllamaまたはLM Studioノードへ独立した推論リクエストをモデル有無・負荷・GPU使用率に応じて振り分けるオープンソースのローカルルータとして公開された。Apple M4+を公式対応対象に含み、OpenAI互換エンドポイントを既存クライアントから利用できる。一方で単一リクエストの分割、GPUメモリのpooling、モデルshardingは行わず、1リクエストは必ず1ノードで完結する。",
+  "whyItMatters": "複数のローカルMacを単一巨大モデルの分散実行ではなく、coding agentのsubagentや並列タスクを捌く共有推論プールとして使う実用的な経路が公式実装になった。現時点ではOllama/LM Studio中心で、llama.cpp対応は未mergeのPR段階なので、標準runtimeを増やして試すより対応拡大を待つ価値が高い。",
+  "status": "WATCH",
+  "tags": ["apple-silicon", "local-ai", "multi-agent", "inference-routing"],
+  "sources": [
+    {
+      "title": "NVIDIA PAIR Virtual Inference Router Expands Available Compute on Your Local Network",
+      "url": "https://developer.nvidia.com/blog/nvidia-pair-virtual-inference-router-expands-available-compute-on-your-local-network/",
+      "publisher": "NVIDIA",
+      "publishedAt": "2026-09-03T00:00:00Z"
+    },
+    {
+      "title": "NVIDIA Personal AI Router - Getting Started",
+      "url": "https://github.com/NVIDIA/Personal-AI-Router/blob/main/docs/getting-started.mdx",
+      "publisher": "NVIDIA"
+    },
+    {
+      "title": "Add adopt-only llama.cpp engine and OpenAI proxy (PR #41)",
+      "url": "https://github.com/NVIDIA/Personal-AI-Router/pull/41",
+      "publisher": "GitHub"
+    }
+  ]
+}
