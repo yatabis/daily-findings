@@ -1,0 +1,31 @@
+{
+  "id": "omlx-qwen4-ple-lookahead-prefetch",
+  "date": "2026-09-10",
+  "title": "oMLXがSSD-backed PLEをhost一括assemblyと次chunk先読みでprefillから隠すPR",
+  "summary": "oMLX PR #3534はQwen3.8-Flash-NextのSSD-backed PLEで、chunk内の多数shardを個別upload/dequantizeする代わりにhost側でtensor familyごとの連続bufferへ組み立てて各family一回だけuploadし、さらにschedulerが次chunkのtokenを事前通知して現在chunkのGPU実行中に単一workerで次のPLE rowをgatherする。M5 Maxでは2048-token chunkのPLE layerが248→35 ms、16K/63K/134K/229K prefillがそれぞれ約+33%/+18%/+13%/+12%。decodeはほぼ不変で、PRはopen。",
+  "whyItMatters": "既存の並列pread最適化の次段として、I/Oを速くするだけでなく『多数shardのpublicationを一括化する』『schedulerが未来のchunkをモデルへ知らせてI/OをGPU計算と重ねる』という責務境界が有効だと示す。SSD offloadを使う独自runtimeでは、operator側のprefetch hookとscheduler側のlookaheadを明示APIにする価値がある。",
+  "status": "TRY",
+  "tags": [
+    "omlx",
+    "apple-silicon",
+    "m5",
+    "qwen3.8",
+    "qwen4",
+    "ssd-offload",
+    "ple",
+    "prefill",
+    "scheduling",
+    "prefetch"
+  ],
+  "relatedFindingIds": [
+    "omlx-qwen4-ssd-ple-concurrent-pread"
+  ],
+  "sources": [
+    {
+      "title": "perf(qwen4_exp): faster Qwen3.8-Flash-Next prefill: hyper-connections on prefill rows, SSD-backed PLE gather assembled on the host and gathered ahead",
+      "url": "https://github.com/jundot/omlx/pull/3534",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-09-09T01:46:03Z"
+    }
+  ]
+}

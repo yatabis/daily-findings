@@ -1,0 +1,33 @@
+{
+  "id": "omlx-ragged-batched-mtp",
+  "date": "2026-09-10",
+  "title": "oMLXでragged multi-token MTPを一回のbatched verifyにまとめるPR",
+  "summary": "oMLX PR #3533は複数MTP requestを一回の(N,k+1) verify forwardへまとめ、各row固有のaccept長に応じてragged commitとper-row rollbackを行うexperimental pathを追加する。M5 Max / Qwen3.8-Flash-Next / greedyでk=2・8-way時51.6 tok/s aggregate、既存row-wise batched MTPの約6倍と報告し、12〜16-wayでは約53 tok/sで飽和した。ただしQSA cacheのragged rollbackにはmlx-vlm PR #2197が必要で、2026-09-10時点では両PRともopen。非greedyやlogits processor等はfallbackする。",
+  "whyItMatters": "speculative decodingをsingle-stream最適化ではなくcontinuous batchingと統合する設計例として重要で、将来M5 Ultra上で複数coding agentを並列実行するときに効く。一方でrollback依存が未mergeで、対応範囲もgreedyなGDN+PLE系に限定されるため、現時点では実装を取り込むよりstate transactionとragged rollback contractの設計資料として保持する。",
+  "status": "HOLD",
+  "tags": [
+    "omlx",
+    "mlx-vlm",
+    "apple-silicon",
+    "m5",
+    "qwen3.8",
+    "mtp",
+    "speculative-decoding",
+    "continuous-batching",
+    "rollback"
+  ],
+  "sources": [
+    {
+      "title": "Fused-batch ragged multi-token MTP: concurrent speculative decode (OMLX_MTP_FUSED_BATCH)",
+      "url": "https://github.com/jundot/omlx/pull/3533",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-09-09T00:46:33Z"
+    },
+    {
+      "title": "Fix qwen3_5 ragged speculative rollback on BatchQSAKVCache",
+      "url": "https://github.com/Blaizzy/mlx-vlm/pull/2197",
+      "publisher": "Blaizzy/mlx-vlm (GitHub)",
+      "publishedAt": "2026-09-09T00:39:51Z"
+    }
+  ]
+}

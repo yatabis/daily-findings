@@ -1,0 +1,33 @@
+{
+  "id": "mlx-global-scale-nvfp4-matrix-kernels",
+  "date": "2026-09-10",
+  "title": "MLXがglobal-scale NVFP4のgather量子化行列積をmatrix kernelへ移すPR",
+  "summary": "MLX PR #4481はglobal scale付きgather_qqmmを新しいgather_qmm matrix kernelへdispatchし、Qwen3.6-35B-A3BのNVFP4 MLP-only（p2048/g128）でM5 Maxのprefillを1,257.0→3,105.3 tok/s、M3 Ultraを1,627.3→2,673.2 tok/sと報告した。generationはほぼ不変。続く#4483はqmm_t kernelにもglobal scale読み込みを追加し、#4481との組み合わせでM5 Max 4,256.2 tok/s、M3 Ultra 2,819.9 tok/sを報告している。両PRは2026-09-10時点でopen。",
+  "whyItMatters": "量子化形式そのものより、global scaleという量子化メタデータの有無で高速matrix pathから外れるだけでprefillが数倍変わり得ることを示している。独自MLX runtimeではbits/group sizeだけでなくscale方式・weight layout・phaseまでKernelPlanのdispatch keyに含め、NVFP4系のprefill crossoverを実測する価値が高い。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "apple-silicon",
+    "m5",
+    "m3-ultra",
+    "nvfp4",
+    "quantization",
+    "prefill",
+    "moe",
+    "kernel-dispatch"
+  ],
+  "sources": [
+    {
+      "title": "Use matrix kernels for global-scale gather_qqmm",
+      "url": "https://github.com/ml-explore/mlx/pull/4481",
+      "publisher": "ml-explore/mlx (GitHub)",
+      "publishedAt": "2026-09-08T19:43:08Z"
+    },
+    {
+      "title": "Load global scales in qmm_t kernels",
+      "url": "https://github.com/ml-explore/mlx/pull/4483",
+      "publisher": "ml-explore/mlx (GitHub)",
+      "publishedAt": "2026-09-09T03:17:46Z"
+    }
+  ]
+}
