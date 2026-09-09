@@ -1,0 +1,22 @@
+{
+  "id": "astra-single-forward-pass-reasoning",
+  "date": "2026-09-09",
+  "title": "GPT-6 AstraでNo-CoT単一forward-pass推論能力が大幅に伸びた",
+  "summary": "GPT-6 AstraのSystem Cardに収録されたUK AISIの外部評価では、Chain of Thoughtを使わない単一forward passで解ける数学問題の50% reliability time horizonが30.9分となり、GPT-5.6 Solの3.6分を大きく上回った。CoT controllabilityも93%対48%に上昇し、raw reasoningはより圧縮された表現になった。一方、OpenAIの公開資料はrecurrent depthやlooped Transformerを採用したとは明記しておらず、具体的な内部アーキテクチャは未確認である。",
+  "whyItMatters": "出力CoTを長くする以外にも、1 tokenを出す前の内部処理側へ推論能力が移る可能性を示す強いproduction evidenceになる。将来のローカルモデルでは、出力token数やdecode tok/sだけでは思考量を表せず、可変な内部computeやlatent iterationを扱うruntime設計が重要になる可能性がある。ただし現時点ではweightsもarchitectureも非公開なので実装・試用対象ではない。",
+  "status": "WATCH",
+  "tags": [
+    "reasoning",
+    "latent-reasoning",
+    "test-time-compute",
+    "architecture",
+    "gpt-6-astra"
+  ],
+  "sources": [
+    {
+      "title": "GPT-6 Astra System Card",
+      "url": "https://deploymentsafety.openai.com/gpt-6-astra",
+      "publisher": "OpenAI"
+    }
+  ]
+}

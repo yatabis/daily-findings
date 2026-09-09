@@ -1,0 +1,36 @@
+{
+  "id": "omlx-qwen4-ssd-ple-concurrent-pread",
+  "date": "2026-09-09",
+  "title": "oMLX mainでQwen3.8-Flash-NextのSSD-backed PLE lookupを並列化",
+  "summary": "oMLX mainのcommit fc69aecは、Qwen4-Exp/Qwen3.8-Flash-NextでSSDに置いたPLE（n-gram bank）の散在row lookupを、mmap上の逐次page faultから複数os.preadの並列prefetchへ変更した。開発者のM4 Max内蔵NVMe測定では500件の4KB random readが約9.1kから98.8k IOPSへ伸び、40K-token cold promptでは特定のQwen3.8-Flash-Next checkpointでTTFT 216.85秒から6.54秒、generation 43.70から59.92 tok/sを報告している。row結果はbyte-identicalで、対象はSSD-backed PLE modeのみ。最新stableは依然0.6.4である。",
+  "whyItMatters": "64GB級Apple SiliconでQwen3.8-Flash-Nextの大きなPLEをSSD offloadする際の実ボトルネックを直接潰す変更で、ユーザーの既存運用に最も近い。ただし数値は開発側測定で、0.6.4にはagent loopのprefix-cache regressionが複数報告されたまま。#3287を含むstable releaseと、M4 Pro 64GBでprefix reuse・長時間agent loopのcorrectnessを保った独立A/Bが揃うまでは導入しない。",
+  "status": "HOLD",
+  "tags": [
+    "omlx",
+    "apple-silicon",
+    "qwen3.8",
+    "qwen4",
+    "ssd-offload",
+    "ple",
+    "inference"
+  ],
+  "sources": [
+    {
+      "title": "fix: use concurrent pread for Qwen4-Exp PLE row lookups (~10x SSD throughput)",
+      "url": "https://github.com/jundot/omlx/commit/fc69aecacb9927bd4be31ebb2e818f342369385a",
+      "publisher": "jundot/omlx (GitHub)"
+    },
+    {
+      "title": "oMLX 0.6.4",
+      "url": "https://github.com/jundot/omlx/releases/tag/v0.6.4",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-08-29T17:05:15Z"
+    },
+    {
+      "title": "Boundary snapshots never captured on Qwen3.8-27B in 0.6.4",
+      "url": "https://github.com/jundot/omlx/issues/3317",
+      "publisher": "jundot/omlx (GitHub)",
+      "publishedAt": "2026-08-30T16:11:39Z"
+    }
+  ]
+}
