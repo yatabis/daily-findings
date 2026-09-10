@@ -1,0 +1,33 @@
+{
+  "id": "omlx-cluster-v2-distributed-mac-inference",
+  "date": "2026-09-10",
+  "title": "oMLX Cluster v2がmainへ入り、複数Mac分散推論を実用導線へ統合",
+  "summary": "oMLX mainにCluster v2 dashboardが入り、複数Mac間のTensor Parallel / Pipeline Parallel、signed planning、モデルstaging、live memory budget、rank prompt cache、activationを一体管理する導線が統合された。関連する物理検証ではQwen3.6-27Bを2台のMacとThunderbolt RDMAで28.6 tok/s、単一node 16.1 tok/sに対して1.78倍で実行し、byte-identical出力を確認している。",
+  "whyItMatters": "NVIDIA PAIRのようなrequest routingではなく、1つのモデル自体を複数Macへ分割するため、単機のunified memory上限を超えるモデルをApple Siliconで扱う方向を実用化し得る。ただしCluster v2 dashboardの今回のmerge自体には新しい物理multi-Mac検証がなく、stable releaseもまだ0.6.4で、異種Mac構成の性能も未確立なので今はWATCH。",
+  "status": "WATCH",
+  "tags": [
+    "omlx",
+    "mlx",
+    "apple-silicon",
+    "distributed-inference",
+    "tensor-parallel",
+    "pipeline-parallel"
+  ],
+  "sources": [
+    {
+      "title": "feat(cluster): ship the Cluster v2 dashboard",
+      "url": "https://github.com/jundot/omlx/pull/3516",
+      "publisher": "oMLX"
+    },
+    {
+      "title": "Distributed cluster serving across Macs (tensor + pipeline parallel)",
+      "url": "https://github.com/jundot/omlx/pull/2423",
+      "publisher": "oMLX"
+    },
+    {
+      "title": "feat(cluster): add the Cluster v2 dashboard",
+      "url": "https://github.com/jundot/omlx/commit/4d06a6c65ff5b335dcb124ce42a3a4d23b3053d7",
+      "publisher": "oMLX"
+    }
+  ]
+}

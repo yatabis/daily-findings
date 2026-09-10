@@ -1,0 +1,33 @@
+{
+  "id": "deepseek-v4-1-flash-new-architecture",
+  "date": "2026-09-10",
+  "title": "DeepSeek V4.1 Flashが正式公開、新アーキテクチャとopen weightsを提示",
+  "summary": "9月8日の期間限定プレビューから正式リリースへ移行し、DeepSeekはV4.1 Flashを新アーキテクチャ系の最小モデルとして公開した。公開技術資料を引用した複数の確認では、552B backboneに約196BのEngramメモリを組み合わせ、prefill時8B・decode時16Bを活性化する非対称構成とされる。公式weightsも公開された一方、checkpointは数百GB級で、M4 Pro 64GBのローカル実用範囲から大きく外れる。",
+  "whyItMatters": "prefillとdecodeで活性計算量を変え、巨大なN-gram系メモリを分離する設計は、今後のQwen4級やローカルMoEで計算・記憶・長文処理を別々に最適化する方向として重要。ただし現状はモデル規模、Apple Silicon向けruntime、独立評価の不足が明確な障害で、試す対象ではない。",
+  "status": "WATCH",
+  "tags": [
+    "deepseek",
+    "architecture",
+    "engram",
+    "moe",
+    "multimodal"
+  ],
+  "sources": [
+    {
+      "title": "China's DeepSeek launches V4.1-Flash model",
+      "url": "https://www.reuters.com/world/asia-pacific/chinas-deepseek-launches-v41-flash-model-2026-09-10/",
+      "publisher": "Reuters",
+      "publishedAt": "2026-09-10T06:32:45Z"
+    },
+    {
+      "title": "DeepSeek-V4.1-Flash model weights",
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+      "publisher": "DeepSeek"
+    },
+    {
+      "title": "DeepSeek Harness: add V41 Flash alongside V4 models",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/ecc6f11cf133155fe7989d5eb6417c7493928df6",
+      "publisher": "DeepSeek"
+    }
+  ]
+}
