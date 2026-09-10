@@ -1,0 +1,28 @@
+{
+  "id": "mlxcel-looped-model-owned-sequence-state",
+  "date": "2026-09-11",
+  "title": "mlxcelがLooped Transformer系でflat KV cacheを捨てmodel-owned stateを採用",
+  "summary": "mlxcelはIQuest-Coder Loopの2-pass decoderを実装し、同じ80層を同じ重みで2回通す構造に対して、各layerがpass 1のdense KVとpass 2の64-token rotating KVを別々に保持するModelOwnedSequenceStateを導入した。flatなVec<KVCache>では表現せず、snapshot/prefix cache・padded prefill・batched decodeなどはstate contractが未整備なため明示的に無効化している。",
+  "whyItMatters": "looped/recurrent系の新アーキテクチャでは『各layerに1個のKV cache』というruntime前提が崩れる。独自MLX runtimeのStateBundleを最初からモデル固有のnested stateを持てる形にしておく根拠になる。一方この実装のMetal workspace gateは未実行で、今すぐモデル対応する必要まではない。",
+  "status": "WATCH",
+  "tags": [
+    "mlxcel",
+    "Looped Transformer",
+    "state management",
+    "KV cache",
+    "new architecture",
+    "Apple Silicon"
+  ],
+  "sources": [
+    {
+      "title": "mlxcel commit 86d35b2: add IQuest-Coder Loop two-pass decoder",
+      "url": "https://github.com/lablup/mlxcel/commit/86d35b2f25fde87172f429eb485206dfc23a0513",
+      "publisher": "GitHub"
+    },
+    {
+      "title": "mlxcel v0.7.0",
+      "url": "https://github.com/lablup/mlxcel/releases/tag/v0.7.0",
+      "publisher": "GitHub"
+    }
+  ]
+}

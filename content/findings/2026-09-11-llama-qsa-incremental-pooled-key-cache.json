@@ -1,0 +1,23 @@
+{
+  "id": "llama-qsa-incremental-pooled-key-cache",
+  "date": "2026-09-11",
+  "title": "llama.cppがQSA indexerのblock summary keyを増分cache化",
+  "summary": "llama.cpp PR #28699ではQwen3.8-Flash-NextのQSA indexerが各decode step・各QSA layerで全contextからblock summary keyを再計算していた経路を、完了済みblockごとにf32 summary rowを保存する増分cacheへ変更した。新しく完了したblockだけpool・normalize・RoPEし、rollbackやcopy系操作はsequenceごとのwatermarkで整合させる。8-GPU CUDA測定では63k/114k contextでdecodeが約9.3〜9.4%改善し、prefillはほぼ不変だった。",
+  "whyItMatters": "長文decodeでcontext長に比例するindexer前処理を毎token繰り返さずに済む設計で、MLXへもアルゴリズムとして移植しやすい。ただし現時点の公開実測はCUDAでApple Silicon上の効果が未確認のため、まずwatchしてM5系で同じボトルネックをprofileしてから実装判断する。",
+  "status": "WATCH",
+  "tags": [
+    "QSA",
+    "Qwen3.8-Flash-Next",
+    "llama.cpp",
+    "KV cache",
+    "long context",
+    "rollback"
+  ],
+  "sources": [
+    {
+      "title": "llama.cpp PR #28699: incremental pooled-key cache for the QSA indexer",
+      "url": "https://github.com/ggml-org/llama.cpp/pull/28699",
+      "publisher": "GitHub"
+    }
+  ]
+}

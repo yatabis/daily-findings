@@ -1,0 +1,23 @@
+{
+  "id": "omlx-mtp-parked-head-priming",
+  "date": "2026-09-11",
+  "title": "oMLXがMTP停止中もdraft headをprimed状態に保つ再入戦略を提案",
+  "summary": "oMLXのQwen3.8-Flash-Next向けPRでは、適応MTPが一時的に通常decodeへ戻った際にdraft head cacheを捨てず、通常decode中のhidden stateと次tokenを32 token単位でまとめてMTP headへ流して追従させる。68k token級のprose例では、154 token後にMTPをparkした後も再試行時に約68.6kまでprimedされた状態から復帰し、残り742 tokenをMTPで処理できた。",
+  "whyItMatters": "speculationを単純なon/offではなく、parked-but-primedを含む永続的な状態機械として設計する根拠になる。既存のmtp_forwardを使う制御・state管理中心の変更なので、MLXベースの独自runtimeへ比較的移植しやすい。",
+  "status": "TRY",
+  "tags": [
+    "Apple Silicon",
+    "MLX",
+    "oMLX",
+    "MTP",
+    "speculative decoding",
+    "state management"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3553: Qwen3.8-Flash-Next decode optimizations",
+      "url": "https://github.com/jundot/omlx/pull/3553",
+      "publisher": "GitHub"
+    }
+  ]
+}

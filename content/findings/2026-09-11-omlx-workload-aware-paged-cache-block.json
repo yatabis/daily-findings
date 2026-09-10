@@ -1,0 +1,24 @@
+{
+  "id": "omlx-workload-aware-paged-cache-block",
+  "date": "2026-09-11",
+  "title": "oMLXでpaged cache blockをモデル形状ではなくworkloadに合わせる効果が顕在化",
+  "summary": "oMLX PR #3557では、Qwen3.8-27Bのモデル形状由来4096-token blockが約3.6k-tokenのcoding-agent system promptを丸ごと再利用不能にしていた。M3 Max 64GBでblockを512へ変更すると、20タスクの中央値でprefix hit率59.8%→88.7%、再prefill token数-64.3%、TTFT 18.35→5.92秒、suite wall time -38.5%となり、decodeは-3.6%だった。",
+  "whyItMatters": "cache block sizeをモデルのrecurrent/prefill geometryだけで決めると、実際の安定prefix長との境界ずれで大きな再計算が起きる。独自runtimeではprefill演算粒度とcache persistence粒度を分離し、workload統計からblock sizeを選ぶautotune対象にする価値が高い。",
+  "status": "TRY",
+  "tags": [
+    "Apple Silicon",
+    "MLX",
+    "oMLX",
+    "paged cache",
+    "prefix cache",
+    "scheduler",
+    "agent"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3557: allow overriding resolved paged cache block size",
+      "url": "https://github.com/jundot/omlx/pull/3557",
+      "publisher": "GitHub"
+    }
+  ]
+}
