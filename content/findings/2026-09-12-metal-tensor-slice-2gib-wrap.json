@@ -1,0 +1,23 @@
+{
+  "id": "metal-tensor-slice-2gib-wrap",
+  "date": "2026-09-12",
+  "title": "llama.cppがMetal Tensor APIの2GiB slice offset境界で4GiB逆行する不具合を回避",
+  "summary": "llama.cpp PR #28748 はM5 MacBook Airで、Metal Tensor APIのtensor.sliceがbaseからのslice開始offsetが0x80000000以上になると実アドレスを4GiB手前に生成する再現を報告した。修正はsliceを使わず、64-bit pointer arithmeticでtile先頭を計算してそのpointerからtensorを構築する。",
+  "whyItMatters": "大きなweight/output bufferを扱うM5 Ultraでは2GiB境界は容易に踏む。独自Metal kernelのcorrectness suiteに2GiB直前・直後のaddressing regressionを入れ、Tensor APIのbase-relative sliceに依存しない大規模buffer addressingを優先して検証する価値がある。",
+  "status": "TRY",
+  "tags": [
+    "llama.cpp",
+    "metal",
+    "correctness",
+    "m5",
+    "large-buffer"
+  ],
+  "sources": [
+    {
+      "title": "metal: fix metal tensor kernel_mul_mm error for large tensor",
+      "url": "https://github.com/ggml-org/llama.cpp/pull/28748",
+      "publisher": "GitHub / ggml-org/llama.cpp",
+      "publishedAt": "2026-09-11T10:00:38Z"
+    }
+  ]
+}

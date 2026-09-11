@@ -1,0 +1,23 @@
+{
+  "id": "omlx-affine8-kv-cache",
+  "date": "2026-09-12",
+  "title": "oMLXがM5 native attention対応のAffine8 KV cacheを追加",
+  "summary": "oMLX PR #3582 はper-vector FP32 scaleを使うsigned-affine 8-bit KV cacheを追加し、incremental prefill compression、portable MLX fallback、prefix/SSD persistence、M5-native attentionを同じcapability lifecycleに統合する。D256のK/V vectorはFP16 512Bに対して260Bで、250K attention-onlyではtested geometryでnative FP16より1.0〜31.2%低いmedian latencyを報告する。",
+  "whyItMatters": "KV formatを単独のcodecではなくattention kernel・persistence・admission accountingまで含むcapabilityとして設計する好例。8-bitは4-bitより品質余裕を取りやすく長文用途に現実的だが、PRはAffine4の未マージPR #3499に依存し、semantic qualityやretrieval accuracyも未検証なので現時点では導入を保留する。",
+  "status": "HOLD",
+  "tags": [
+    "omlx",
+    "kv-cache",
+    "quantization",
+    "m5",
+    "long-context"
+  ],
+  "sources": [
+    {
+      "title": "feat: add generic Affine8 KV cache with M5 acceleration",
+      "url": "https://github.com/jundot/omlx/pull/3582",
+      "publisher": "GitHub / jundot/omlx",
+      "publishedAt": "2026-09-11T16:33:49Z"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "mlx-d512-nax-head-split",
+  "date": "2026-09-12",
+  "title": "MLXがD512 attentionを4-way head-dim splitして長文時のピークメモリを削減",
+  "summary": "MLX PR #4487 はNAX GPU向けD512 self-attentionでhead dimensionを4つのsimdgroupに分割し、各groupがDの一部を担当してQKの部分和だけをthreadgroup memoryで交換する実装を追加する。Gemma 4 31Bの16Kでピークメモリ23.9515GB→22.0368GB、Gemma 4 12Bの65Kで13.8004GB→9.5775GBとなり、prompt/generation性能は変わらないと報告されている。",
+  "whyItMatters": "wide-head attentionでは演算量だけでなくsimdgroupごとのaccumulator working setがメモリ圧と実装可能性を決める。独自MLX runtimeのattention plannerでhead dimension分割数を候補化し、M5 Ultra実機でD256/D512のsplit数をautotuneする価値がある。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "metal",
+    "attention",
+    "nax",
+    "memory",
+    "m5"
+  ],
+  "sources": [
+    {
+      "title": "Improve metal memory usage for SDPA D512",
+      "url": "https://github.com/ml-explore/mlx/pull/4487",
+      "publisher": "GitHub / ml-explore/mlx",
+      "publishedAt": "2026-09-10T20:44:06Z"
+    }
+  ]
+}

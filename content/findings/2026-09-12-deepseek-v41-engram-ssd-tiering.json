@@ -1,0 +1,24 @@
+{
+  "id": "deepseek-v41-engram-ssd-tiering",
+  "date": "2026-09-12",
+  "title": "oMLXがDeepSeek V4.1 FlashのEngramをSSDへ独立tiering",
+  "summary": "oMLX PR #3574 はDeepSeek V4.1 FlashにDSpark MTPとEngram RAM/SSD modeを追加し、M3 Ultra 512GiBのoQ4eでEngram RAM時のpeak MLX約404GiBに対しSSD offloadでは約290GiBまで削減しつつ、4K〜64Kのprefill/decode速度をほぼ維持した。実装はEngram tableをpackedのまま保持し、SSD modeで選択pageをprefetchする。",
+  "whyItMatters": "MoE expertとは別に、table型の静的retrieval stateを独立したstorage tierへ落とす設計が成立する実例。将来の巨大モデル向けResidencyPlanにEngram/lookup table tierを持たせる価値がある。一方256GiB機ではoQ3eでもloader estimateが約251.34GiBで余裕がほぼなく、より高精度量子化を使う用途では現状実用条件を満たさない。",
+  "status": "HOLD",
+  "tags": [
+    "omlx",
+    "deepseek-v4.1",
+    "ssd-offload",
+    "engram",
+    "mtp",
+    "memory"
+  ],
+  "sources": [
+    {
+      "title": "feat: add DeepSeek V4.1 Flash with DSpark MTP and Engram SSD offload",
+      "url": "https://github.com/jundot/omlx/pull/3574",
+      "publisher": "GitHub / jundot/omlx",
+      "publishedAt": "2026-09-11T07:46:57Z"
+    }
+  ]
+}

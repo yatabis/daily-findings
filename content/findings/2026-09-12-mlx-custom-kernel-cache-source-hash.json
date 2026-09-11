@@ -1,0 +1,23 @@
+{
+  "id": "mlx-custom-kernel-cache-source-hash",
+  "date": "2026-09-12",
+  "title": "MLX custom kernelのsource差し替えでin-flight pipelineを破棄し得るキャッシュ設計問題が報告",
+  "summary": "MLX PR #4489 は同じkernel名でsourceを変えるcustom kernel実行時、従来のname-keyed cacheがclear_library()を呼び、実行中command bufferが参照するMTLComputePipelineStateを破棄してSIGABRTを起こし得ると報告した。提案修正はsource hashをkeyにして複数variantを共存させる方式。PR自体は未マージでclosed。",
+  "whyItMatters": "shapeやdtypeごとにcustom Metal kernelを生成・autotuneする独自runtimeでは、kernel cacheのidentityとlifetimeが実行安全性に直結する。source/specializationを含むcontent-addressed keyを使い、in-flight pipelineをevictしない契約を早い段階で入れておく価値がある。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "metal",
+    "kernel-cache",
+    "autotune",
+    "correctness"
+  ],
+  "sources": [
+    {
+      "title": "fix: hash-based custom kernel cache to avoid clear_library",
+      "url": "https://github.com/ml-explore/mlx/pull/4489",
+      "publisher": "GitHub / ml-explore/mlx",
+      "publishedAt": "2026-09-11T02:28:54Z"
+    }
+  ]
+}
