@@ -1,0 +1,28 @@
+{
+  "id": "deepseek-v4-1-reap-2bit-apple-negative-qualification",
+  "date": "2026-09-11",
+  "title": "DeepSeek V4.1 FlashのREAP 2-bit実測でexpert数削減の速度限界が確認",
+  "summary": "Rapid-MLX 0.14.1はDeepSeek V4.1 Flashのnative affine 2-bit REAP実験を公開した。384 routed expertsを336へ削り、平均99.9949%のrouting massを保持した約199 GiBのartifactはM3 Ultra 256 GiBで213.51 GBのMLX memoryを使用し、best short-decodeでも7.92 tok/sだった。Rapid-MLXの12 tok/s product gateを通らずcatalogには追加されていない。報告ではexpert総数を減らしても各tokenが実行する6 expertsの幅は変わらず、保存容量の削減がdecode compute削減へ直結しないことを明示している。",
+  "whyItMatters": "REAP系のexpert pruningを大規模MoEのApple Silicon適合策として見る際、容量削減とdecode高速化を分けて考える必要があるという実測。64GB機では対象外だが、今後より大きなMoEをローカル化する設計判断に有用な負の結果。",
+  "status": "WATCH",
+  "tags": [
+    "deepseek-v4-1",
+    "reap",
+    "moe",
+    "apple-silicon",
+    "quantization"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX v0.14.1",
+      "url": "https://github.com/raullenchai/Rapid-MLX/releases/tag/v0.14.1",
+      "publisher": "Rapid-MLX",
+      "publishedAt": "2026-09-11T04:58:28Z"
+    },
+    {
+      "title": "bench: qualify native 2-bit V4.1 REAP artifact (#3301)",
+      "url": "https://github.com/raullenchai/Rapid-MLX/commit/cc8681a2b4903d2142e96c26f56f52e036a438d4",
+      "publisher": "Rapid-MLX"
+    }
+  ]
+}

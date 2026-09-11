@@ -1,0 +1,27 @@
+{
+  "id": "mercury-2-5-diffusion-llm-production-maturity",
+  "date": "2026-09-11",
+  "title": "Mercury 2.5で拡散型LLMが実運用エージェント領域へ前進",
+  "summary": "Inceptionは2026年9月8日にMercury 2.5を公開した。自己回帰ではなく複数トークンを反復的に精緻化する拡散型LLMで、260Kコンテキスト、調整可能な推論、並列ツール呼び出し、スキーマ準拠JSONを提供する。開発元は広く入手可能なNVIDIA GPUで1,107 tok/sを主張し、Augment CodeではMercury系をコンテキスト圧縮やMCPツール検索に本番利用していると報告している。一方、標準ベンチマークの独立検証はまだ乏しく、weightsは非公開でAPI提供のみ。",
+  "whyItMatters": "拡散型テキスト生成が単なる高速デモではなく、ツール利用を伴うproduction agentの補助呼び出しで成立している点が重要。将来open-weight化やローカルruntimeが進めば、自己回帰前提のdecode設計とは別の実用的推論経路になり得る。ただし現状はローカル実行できず、品質・速度の主要数字も開発元主張なので試す対象ではない。",
+  "status": "WATCH",
+  "tags": [
+    "diffusion-llm",
+    "inference-architecture",
+    "agents",
+    "production"
+  ],
+  "sources": [
+    {
+      "title": "Introducing Mercury 2.5",
+      "url": "https://www.inceptionlabs.ai/blog/introducing-mercury-2-5",
+      "publisher": "Inception",
+      "publishedAt": "2026-09-08T00:00:00Z"
+    },
+    {
+      "title": "Inception ships Mercury 2.5 at 1,107 tokens per second, by its count",
+      "url": "https://runtimewire.com/article/inception-mercury-2-5-diffusion-language-model-launch",
+      "publisher": "RuntimeWire"
+    }
+  ]
+}
