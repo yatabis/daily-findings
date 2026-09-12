@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import PageMetadata from "../components/PageMetadata.astro";
+import { SITE_DESCRIPTION } from "../lib/publication.mjs";
 
 interface Props {
   title?: string;
@@ -9,7 +11,7 @@ interface Props {
 
 const {
   title = "daily-findings",
-  description = "AIやローカル推論などのウォッチから残したFindingのログ。",
+  description = SITE_DESCRIPTION,
   indexPage = false,
 } = Astro.props;
 
@@ -28,6 +30,7 @@ const themes = [
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <PageMetadata title={title} description={description} />
     <script is:inline>
       (() => {
         const storageKey = "daily-findings:theme";

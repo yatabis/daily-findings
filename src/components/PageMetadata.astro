@@ -1,0 +1,28 @@
+---
+import { SITE_URL, SITE_TITLE, canonicalUrl } from "../lib/publication.mjs";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+const isNotFound = /^\/404(?:\.html|\/)?$/u.test(path);
+const canonical = canonicalUrl(path);
+---
+
+<link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={`${SITE_URL}rss.xml`} />
+{isNotFound ? (
+  <meta name="robots" content="noindex" />
+) : (
+  <>
+    <link rel="canonical" href={canonical} />
+    <meta property="og:site_name" content={SITE_TITLE} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:type" content={path.startsWith("/findings/") ? "article" : "website"} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+  </>
+)}
