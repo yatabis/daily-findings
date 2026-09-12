@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { headTags } from "../scripts/verify_publication.mjs";
 import {
   SITE_URL, RSS_LIMIT, canonicalUrl, findingUrl, escapeXml,
   createRss, createSitemap, feedFindings,
@@ -75,4 +76,11 @@ test("0件でもRSSとサイトマップを生成できる", () => {
   assert(createRss([]).includes("<channel>"));
   assert(!createRss([]).includes("<item>"));
   assert.equal((createSitemap([]).match(/<loc>/gu) ?? []).length, 1);
+});
+
+// 属性値中の > はタグの終端ではない。実データの型表記で検出した回帰を固定する。
+test("メタデータの検証は属性内の型表記と引用符を保持する", () => {
+  const tags = headTags('<head><meta property="og:description" content="Vec<KVCache> と &quot;引用&quot; &amp; 比較"><link rel="canonical" href="https://findings.yatabis.dev/"></head>');
+  assert.equal(tags[0].content, 'Vec<KVCache> と "引用" & 比較');
+  assert.equal(tags[1].href, SITE_URL);
 });

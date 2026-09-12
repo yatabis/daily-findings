@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import {
   SITE_URL, SITE_TITLE, SITE_DESCRIPTION, findingUrl, createRss, createSitemap,
 } from "../src/lib/publication.mjs";
@@ -14,10 +15,10 @@ const decode = (text) => text.replace(/&(#x[0-9a-f]+|#\d+|amp|quot|apos|lt|gt);/
   return { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">" }[value];
 });
 
-function headTags(html) {
+export function headTags(html) {
   const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/iu)?.[1];
   assert(head, "HTMLにheadがありません。");
-  return [...head.matchAll(/<(?:meta|link)\b[^>]*>/giu)].map(([tag]) =>
+  return [...head.matchAll(/<(?:meta|link)\b(?:[^<>"']|"[^"]*"|'[^']*')*>/giu)].map(([tag]) =>
     Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/gu)].map(([, key, value]) => [key, decode(value)])),
   );
 }
@@ -57,7 +58,9 @@ async function main() {
   console.log(`${findings.length}件のFindingについて、正式URL・OGP・RSS・サイトマップを確認しました。`);
 }
 
-main().catch((error) => {
-  console.error("公開用データの検証に失敗しました:", error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error("公開用データの検証に失敗しました:", error.message);
+    process.exitCode = 1;
+  });
+}
