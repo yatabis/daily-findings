@@ -12,6 +12,7 @@
   --watch-bg: #e9eef9;
   --hold: #8a5c13;
   --hold-bg: #f8f0df;
+  --menu-surface: #ffffff;
 
   /* 記事の文字・余白は一覧と個別ページで共通にする。 */
   --reading-width: 780px;
@@ -39,6 +40,7 @@
     --watch-bg: #1f2d49;
     --hold: #e2be79;
     --hold-bg: #3a2c15;
+    --menu-surface: #22221e;
   }
 }
 
@@ -57,6 +59,7 @@
   --watch-bg: #1f2d49;
   --hold: #e2be79;
   --hold-bg: #3a2c15;
+  --menu-surface: #22221e;
 }
 
 * { box-sizing: border-box; }
@@ -84,7 +87,7 @@ a:hover { text-decoration-thickness: 2px; }
 
 a:focus-visible,
 summary:focus-visible,
-select:focus-visible {
+button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;
 }
@@ -114,23 +117,70 @@ p, h1, h2, h3, h4, ul, ol { margin: 0; }
   text-decoration: none;
 }
 
-.theme-control {
-  align-items: center;
-  gap: 8px;
+/* 常時見せるのはアイコンだけ。選択肢は操作するときに開く。 */
+.theme-control { position: relative; flex: 0 0 auto; }
+.theme-control[hidden], .theme-menu[hidden], .theme-icon[hidden] { display: none; }
+
+.theme-trigger {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: var(--muted);
-  font-size: var(--font-meta);
-}
-.theme-control:not([hidden]) { display: flex; }
-.theme-control select {
-  min-height: 32px;
-  padding: 4px 8px;
-  border: 1px solid var(--border-strong);
-  border-radius: 4px;
-  background: var(--background);
-  color: var(--text);
-  font: inherit;
   cursor: pointer;
 }
+
+.theme-trigger:hover,
+.theme-trigger[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  color: var(--text);
+}
+
+.theme-icon { display: block; width: 20px; height: 20px; flex-shrink: 0; }
+
+.theme-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 184px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--menu-surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme-option:hover,
+.theme-option:focus-visible {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.theme-option:focus-visible { outline-offset: -2px; }
+.theme-option .theme-icon { width: 18px; height: 18px; color: var(--muted); }
+.theme-check { width: 16px; height: 16px; margin-left: auto; visibility: hidden; }
+.theme-option[aria-checked="true"] .theme-check { visibility: visible; }
 
 .main-content { padding-top: var(--page-gap); }
 .date-group + .date-group { margin-top: var(--page-gap); }
@@ -148,29 +198,6 @@ p, h1, h2, h3, h4, ul, ol { margin: 0; }
   padding: var(--article-padding) 0;
   border-bottom: 1px solid var(--border);
   scroll-margin-top: 24px;
-}
-
-/* タイトルのリンクを記事の余白へ広げる。本文や出典の上には重ねない。 */
-.finding-article[data-linked] { position: relative; isolation: isolate; }
-.finding-permalink::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-.finding-article[data-linked] .finding-meta,
-.finding-article[data-linked] > p,
-.finding-article[data-linked] > section,
-.finding-article[data-linked] > ul,
-.finding-article[data-linked] > details,
-.finding-permalink > span {
-  position: relative;
-  z-index: 1;
-}
-.finding-permalink:focus-visible { outline: none; }
-.finding-permalink:focus-visible::after {
-  outline: 2px solid currentColor;
-  outline-offset: 4px;
 }
 
 .finding-meta {

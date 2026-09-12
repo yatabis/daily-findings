@@ -14,12 +14,7 @@ const SectionHeading = standalone ? "h2" : "h4";
 const titleId = `title-${finding.id}`;
 ---
 
-<article
-  class="finding-article"
-  id={`finding-${finding.id}`}
-  aria-labelledby={titleId}
-  data-linked={!standalone ? "" : undefined}
->
+<article class="finding-article" id={`finding-${finding.id}`} aria-labelledby={titleId}>
   <header class="finding-header">
     <div class="finding-meta">
       <span class={`status status-${finding.status.toLowerCase()}`}>{finding.status}</span>
@@ -29,9 +24,7 @@ const titleId = `title-${finding.id}`;
     </div>
     <Heading class="finding-title" id={titleId}>
       {standalone ? finding.title : (
-        <a class="finding-permalink" href={`/findings/${finding.id}/`}>
-          <span>{finding.title}</span>
-        </a>
+        <a href={`/findings/${finding.id}/`}>{finding.title}</a>
       )}
     </Heading>
   </header>
