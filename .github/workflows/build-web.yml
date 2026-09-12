@@ -7,6 +7,7 @@ on:
     paths:
       - "content/findings/**"
       - "src/**"
+      - "scripts/verify_web_build.mjs"
       - "astro.config.mjs"
       - "package.json"
       - "tsconfig.json"
@@ -16,6 +17,7 @@ on:
     paths:
       - "content/findings/**"
       - "src/**"
+      - "scripts/verify_web_build.mjs"
       - "astro.config.mjs"
       - "package.json"
       - "tsconfig.json"
@@ -37,5 +39,5 @@ jobs:
       - name: 依存関係をインストール
         run: npm install
 
-      - name: Web UIをビルド
+      - name: Web UIをビルドして生成結果を検証
         run: npm run build

@@ -1,6 +1,3 @@
-import { readdir, readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-
 export type FindingStatus = "TRY" | "WATCH" | "HOLD";
 
 export interface FindingSource {
@@ -22,32 +19,14 @@ export interface Finding {
   sources: FindingSource[];
 }
 
-const findingsDirectory = fileURLToPath(
-  new URL("../../content/findings/", import.meta.url),
-);
+// ビルド後のモジュール位置ではなく、プロジェクトルートを基準に取り込む。
+const findingModules = import.meta.glob<Finding>("/content/findings/*.json", {
+  eager: true,
+  import: "default",
+});
 
 export async function getFindings(): Promise<Finding[]> {
-  let fileNames: string[];
-
-  try {
-    fileNames = await readdir(findingsDirectory);
-  } catch (error) {
-    if (isMissingDirectoryError(error)) {
-      return [];
-    }
-    throw error;
-  }
-
-  const findings = await Promise.all(
-    fileNames
-      .filter((fileName) => fileName.endsWith(".json"))
-      .map(async (fileName) => {
-        const raw = await readFile(`${findingsDirectory}${fileName}`, "utf8");
-        return JSON.parse(raw) as Finding;
-      }),
-  );
-
-  return findings.sort((a, b) => {
+  return Object.values(findingModules).sort((a, b) => {
     const byDate = b.date.localeCompare(a.date);
     return byDate !== 0 ? byDate : a.title.localeCompare(b.title, "ja");
   });
@@ -65,12 +44,4 @@ export function formatFindingDate(date: string): string {
     day: "numeric",
     timeZone: "Asia/Tokyo",
   }).format(new Date(`${date}T00:00:00+09:00`));
-}
-
-function isMissingDirectoryError(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    "code" in error &&
-    (error as NodeJS.ErrnoException).code === "ENOENT"
-  );
 }
