@@ -1,0 +1,22 @@
+{
+  "id": "rapid-mlx-prefill-snapshot-tile-alignment",
+  "date": "2026-09-13",
+  "title": "Rapid-MLXがprompt cacheのsnapshot境界をMLX量子化matmulの32行tileへ整列",
+  "summary": "Rapid-MLX PR #3351は、メッセージ境界でprefillを分割するとMLXの量子化matmulが32行単位で課金されるため、非整列なsnapshot境界が余分なtileを発生させる問題を修正する。M4 ProのQwen3.8-27B-4bitでは短いcold TTFTが642.2msから401.7ms、約500-token prefixを共有する後続turnが699.0msから410.1msへ短縮された。境界は絶対位置ではなく再利用済みprefix後の未計算segmentに対して整列し、tile costが増えない非整列splitは保持する。",
+  "whyItMatters": "cache checkpointの粒度は意味上のmessage境界だけでなくkernelの実際の計算粒度に合わせる必要がある。独自MLX runtimeではsnapshot/checkpoint候補をExecutionPlanのkernel tile geometryと同じcost modelで評価する価値が高い。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "prefill",
+    "prefix-cache",
+    "scheduler",
+    "quantization"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3351: perf(prefill): align the prompt-cache snapshot split to whole prefill tiles",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3351",
+      "publisher": "GitHub"
+    }
+  ]
+}

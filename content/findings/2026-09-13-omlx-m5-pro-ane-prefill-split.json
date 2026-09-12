@@ -1,0 +1,22 @@
+{
+  "id": "omlx-m5-pro-ane-prefill-split",
+  "date": "2026-09-13",
+  "title": "oMLXがM5 ProでANE/GPU prefill分割の世代依存な最適点を実測",
+  "summary": "oMLX PR #3604はM5 Pro 64GB、Qwen3.8-27B-oQ4e-mtpでANE prefillのsplit sweepを公開した。2048-token測定ではMLP share 35%付近でANEとGPUのper-layer時間が釣り合い、16,317-tokenの実server runではGPU-onlyよりTTFTが8〜11%短縮した。GDN shareはmodelのz floor 37.5%未満だとprocedureが一つもcompileされず、decodeはGPUのままで変化しない。",
+  "whyItMatters": "M5世代ではNAX GPUが強く、過去世代のANE分割率を固定で流用できない。M5 Ultra向けには実機でGPU/ANEのper-layer completion timeを測ってsplitをautotuneする設計が重要だが、Ultra固有データはまだない。",
+  "status": "WATCH",
+  "tags": [
+    "mlx",
+    "ane",
+    "m5",
+    "prefill",
+    "heterogeneous-compute"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3604: docs(ane): add M5 Pro single-ANE reference result for Qwen3.8-27B",
+      "url": "https://github.com/jundot/omlx/pull/3604",
+      "publisher": "GitHub"
+    }
+  ]
+}

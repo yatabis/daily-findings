@@ -1,0 +1,22 @@
+{
+  "id": "omlx-qwen4-yarn-rope-long-context-correctness",
+  "date": "2026-09-13",
+  "title": "oMLXがQwen4-ExpのYaRN長文拡張を実装し、fast pathとの能力差を明示",
+  "summary": "oMLX PR #3594は、Qwen3.8-Flash-Nextのrope_parametersに指定されたstatic YaRNがpinned mlx-vlmでは無視され、262,144 token超でunscaled RoPEのまま動く問題を修正する。attention、QSA indexer、MTPで同じrotary stateを共有し、未知のRoPE形式はfail-closedにする。Metal fused mRoPEはattention scalingを表現できない場合eagerへfallbackし、SpecPrefillはscaled RoPEと非互換として扱う。M5 Max 128GBで350K tokenまでfield validationされている。",
+  "whyItMatters": "長文拡張はmodel settingではなくexecution semanticsであり、attention本体だけでなくsparse index、speculative path、fused kernelまで同じposition transformを共有しなければ静かに誤る。独自runtimeではRoPE capabilityをExecutionPlanの合法性条件に含めるべき。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "qwen",
+    "long-context",
+    "rope",
+    "correctness"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3594: feat(qwen4_exp): honor YaRN rope_parameters for long-context extension",
+      "url": "https://github.com/jundot/omlx/pull/3594",
+      "publisher": "GitHub"
+    }
+  ]
+}

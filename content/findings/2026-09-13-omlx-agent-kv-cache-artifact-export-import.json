@@ -1,0 +1,22 @@
+{
+  "id": "omlx-agent-kv-cache-artifact-export-import",
+  "date": "2026-09-13",
+  "title": "oMLXがagent所有のKV cache artifact export/importをRFC実装",
+  "summary": "oMLX draft PR #3615は、engine管理のpaged SSD cacheを外部agentが保持できるartifactへexport/importする仕組みを提案する。artifactはblock chainとGDN sidecarをbyte-identicalに保存し、token chain、model identity、cache signature、SHA-256をfail-closedで検証して再登録する。再起動後も長いprefixを再prefillせず復元できる一方、現状はsingle-node限定でMTP draft stateは保存しない。",
+  "whyItMatters": "prefix cacheを単なるengine内部LRUではなくportableなstate artifactとして扱う境界は、長寿命agentとruntimeを分離するうえで有用。ただしformat、cluster restore、speculative stateの扱いが未確定なので現時点では設計監視に留める。",
+  "status": "HOLD",
+  "tags": [
+    "mlx",
+    "kv-cache",
+    "ssd",
+    "agent",
+    "state-persistence"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3615: Add agent-facing KV cache export/import artifacts (draft, RFC)",
+      "url": "https://github.com/jundot/omlx/pull/3615",
+      "publisher": "GitHub"
+    }
+  ]
+}

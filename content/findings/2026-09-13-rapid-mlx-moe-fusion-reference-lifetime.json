@@ -1,0 +1,22 @@
+{
+  "id": "rapid-mlx-moe-fusion-reference-lifetime",
+  "date": "2026-09-13",
+  "title": "Rapid-MLXがMoE fusion時の強参照で旧projection bufferが解放されない問題を修正",
+  "summary": "Rapid-MLX PR #3353は、gate/up fusion前のnamed_modules()列挙が削除済みup_projへの強参照を全layer分保持し、181.7GBのGLM-5.3-Flash-Nextを256GB M3 Ultraでloadした際にmemory pressureでprocessが終了する問題を修正した。対象parentだけを保持するstreamingなrewriteへ変更し、42 layerのfusionと32K contextまでの実server検証を完了した。decode改善は短文で約1.1〜1.7%に留まり、主効果はload-time transient memoryの抑制。",
+  "whyItMatters": "巨大MoEを256GB級Unified Memoryへ載せる場合、変換アルゴリズムがlayer単位でも探索用containerの参照寿命でpeak memoryが破綻し得る。weight layout変換には明示的なreference lifetimeとweak-reference回帰テストを持たせるべき。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "moe",
+    "memory",
+    "weight-layout",
+    "fusion"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3353: fix(moe): release projection buffers during fusion",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3353",
+      "publisher": "GitHub"
+    }
+  ]
+}
