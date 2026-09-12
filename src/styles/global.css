@@ -24,8 +24,9 @@
   --page-gap: 48px;
 }
 
+/* 手動指定がないときだけ、システム設定へ追従する。 */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --background: #151513;
     --text: #edede7;
     --muted: #aaa9a1;
@@ -39,6 +40,23 @@
     --hold: #e2be79;
     --hold-bg: #3a2c15;
   }
+}
+
+:root[data-theme="light"] { color-scheme: only light; }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #151513;
+  --text: #edede7;
+  --muted: #aaa9a1;
+  --border: #34342f;
+  --border-strong: #484840;
+  --link: #f2f2ec;
+  --try: #8fd3ae;
+  --try-bg: #173525;
+  --watch: #a9c2f3;
+  --watch-bg: #1f2d49;
+  --hold: #e2be79;
+  --hold-bg: #3a2c15;
 }
 
 * { box-sizing: border-box; }
@@ -65,7 +83,8 @@ a {
 a:hover { text-decoration-thickness: 2px; }
 
 a:focus-visible,
-summary:focus-visible {
+summary:focus-visible,
+select:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;
 }
@@ -79,6 +98,11 @@ p, h1, h2, h3, h4, ul, ol { margin: 0; }
 }
 
 .site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
   padding-bottom: var(--section-gap);
   border-bottom: 1px solid var(--border-strong);
 }
@@ -88,6 +112,24 @@ p, h1, h2, h3, h4, ul, ol { margin: 0; }
   font-weight: 750;
   letter-spacing: 0.02em;
   text-decoration: none;
+}
+
+.theme-control {
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: var(--font-meta);
+}
+.theme-control:not([hidden]) { display: flex; }
+.theme-control select {
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
 }
 
 .main-content { padding-top: var(--page-gap); }
@@ -106,6 +148,29 @@ p, h1, h2, h3, h4, ul, ol { margin: 0; }
   padding: var(--article-padding) 0;
   border-bottom: 1px solid var(--border);
   scroll-margin-top: 24px;
+}
+
+/* タイトルのリンクを記事の余白へ広げる。本文や出典の上には重ねない。 */
+.finding-article[data-linked] { position: relative; isolation: isolate; }
+.finding-permalink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.finding-article[data-linked] .finding-meta,
+.finding-article[data-linked] > p,
+.finding-article[data-linked] > section,
+.finding-article[data-linked] > ul,
+.finding-article[data-linked] > details,
+.finding-permalink > span {
+  position: relative;
+  z-index: 1;
+}
+.finding-permalink:focus-visible { outline: none; }
+.finding-permalink:focus-visible::after {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
 }
 
 .finding-meta {

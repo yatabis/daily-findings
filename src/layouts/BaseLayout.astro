@@ -19,8 +19,65 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (() => {
+        const storageKey = "daily-findings:theme";
+        const root = document.documentElement;
+        const colorScheme = document.querySelector('meta[name="color-scheme"]');
+        let preference = "system";
+        let select;
+
+        const normalize = (value) => value === "light" || value === "dark" ? value : "system";
+        const readPreference = () => {
+          try {
+            return normalize(localStorage.getItem(storageKey));
+          } catch {
+            // 保存が許可されていなくても、システム追従と画面内の切り替えは使える。
+            return "system";
+          }
+        };
+        const apply = (value) => {
+          preference = normalize(value);
+          if (preference === "system") {
+            root.removeAttribute("data-theme");
+          } else {
+            root.dataset.theme = preference;
+          }
+          colorScheme?.setAttribute("content", preference === "system" ? "light dark" : preference);
+          if (select) select.value = preference;
+        };
+
+        // 本文の描画前に保存済みの配色を適用し、ページ移動時のちらつきを避ける。
+        apply(readPreference());
+        document.addEventListener("DOMContentLoaded", () => {
+          select = document.getElementById("theme-choice");
+          const control = document.querySelector("[data-theme-control]");
+          if (!select || !control) return;
+          select.value = preference;
+          control.hidden = false;
+          select.addEventListener("change", () => {
+            apply(select.value);
+            try {
+              if (preference === "system") localStorage.removeItem(storageKey);
+              else localStorage.setItem(storageKey, preference);
+            } catch {
+              // 保存できない環境では、現在のページ内だけに適用する。
+            }
+          });
+        }, { once: true });
+
+        // 別タブでの変更と、履歴から復元したページの表示もそろえる。
+        window.addEventListener("storage", (event) => {
+          if (event.key === storageKey || event.key === null) apply(readPreference());
+        });
+        window.addEventListener("pageshow", (event) => {
+          if (event.persisted) apply(readPreference());
+        });
+      })();
+    </script>
     <title>{title}</title>
   </head>
   <body>
@@ -31,6 +88,14 @@ const {
         ) : (
           <a class="site-name" href="/">daily-findings</a>
         )}
+        <div class="theme-control" data-theme-control hidden>
+          <label for="theme-choice">テーマ</label>
+          <select id="theme-choice" name="theme">
+            <option value="system">システム</option>
+            <option value="light">ライト</option>
+            <option value="dark">ダーク</option>
+          </select>
+        </div>
       </header>
       <slot />
     </div>
