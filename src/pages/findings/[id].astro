@@ -1,99 +1,36 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import {
-  formatFindingDate,
-  getFindings,
-  type Finding,
-} from "../../lib/findings";
+import FindingArticle from "../../components/FindingArticle.astro";
+import { getFindings, type Finding } from "../../lib/findings";
 
 export async function getStaticPaths() {
   const findings = await getFindings();
-
+  const byId = new Map(findings.map((finding) => [finding.id, finding]));
   return findings.map((finding) => ({
     params: { id: finding.id },
-    props: { finding },
+    props: {
+      finding,
+      relatedFindings: (finding.relatedFindingIds ?? [])
+        .filter((id) => id !== finding.id)
+        .map((id) => byId.get(id))
+        .filter((related): related is Finding => related !== undefined),
+    },
   }));
 }
 
 interface Props {
   finding: Finding;
+  relatedFindings: Finding[];
 }
 
-const { finding } = Astro.props;
+const { finding, relatedFindings } = Astro.props;
 ---
 
-<BaseLayout
-  title={`${finding.title} | daily-findings`}
-  description={finding.summary}
->
-  <main class="main-content detail-page">
-    <a class="back-link" href="/">← 一覧へ</a>
-
-    <article>
-      <header class="detail-header">
-        <div class="finding-meta detail-meta">
-          <span class={`status status-${finding.status.toLowerCase()}`}>
-            {finding.status}
-          </span>
-          <time datetime={finding.date}>{formatFindingDate(finding.date)}</time>
-        </div>
-
-        <h1 class="detail-title">{finding.title}</h1>
-        <p class="detail-summary">{finding.summary}</p>
-      </header>
-
-      {finding.whyItMatters && (
-        <section class="detail-section">
-          <h2>なぜ重要か</h2>
-          <p>{finding.whyItMatters}</p>
-        </section>
-      )}
-
-      {finding.tags && finding.tags.length > 0 && (
-        <section class="detail-section compact-section">
-          <h2>タグ</h2>
-          <ul class="tag-list" aria-label="タグ">
-            {finding.tags.map((tag) => <li>{tag}</li>)}
-          </ul>
-        </section>
-      )}
-
-      <section class="detail-section sources-section">
-        <h2>情報源</h2>
-        <ol class="source-list">
-          {finding.sources.map((source) => (
-            <li>
-              <a href={source.url} rel="noreferrer" target="_blank">
-                {source.title}
-              </a>
-              {(source.publisher || source.publishedAt) && (
-                <div class="source-meta">
-                  {source.publisher && <span>{source.publisher}</span>}
-                  {source.publishedAt && (
-                    <time datetime={source.publishedAt}>
-                      {new Intl.DateTimeFormat("ja-JP", {
-                        dateStyle: "medium",
-                        timeZone: "Asia/Tokyo",
-                      }).format(new Date(source.publishedAt))}
-                    </time>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {finding.relatedFindingIds && finding.relatedFindingIds.length > 0 && (
-        <section class="detail-section compact-section">
-          <h2>関連Finding</h2>
-          <ul class="related-list">
-            {finding.relatedFindingIds.map((id) => (
-              <li><a href={`/findings/${id}/`}>{id}</a></li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </article>
+<BaseLayout title={`${finding.title} | daily-findings`} description={finding.summary}>
+  <main class="main-content">
+    <nav class="back-navigation" aria-label="一覧への移動">
+      <a class="back-link" href={`/#finding-${finding.id}`}>← 一覧へ</a>
+    </nav>
+    <FindingArticle finding={finding} relatedFindings={relatedFindings} standalone />
   </main>
 </BaseLayout>

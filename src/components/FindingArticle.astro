@@ -1,0 +1,69 @@
+---
+import { formatFindingDate, type Finding } from "../lib/findings";
+import SourceList from "./SourceList.astro";
+
+interface Props {
+  finding: Finding;
+  standalone?: boolean;
+  relatedFindings?: Finding[];
+}
+
+const { finding, standalone = false, relatedFindings = [] } = Astro.props;
+const Heading = standalone ? "h1" : "h3";
+const SectionHeading = standalone ? "h2" : "h4";
+const titleId = `title-${finding.id}`;
+---
+
+<article class="finding-article" id={`finding-${finding.id}`} aria-labelledby={titleId}>
+  <header class="finding-header">
+    <div class="finding-meta">
+      <span class={`status status-${finding.status.toLowerCase()}`}>{finding.status}</span>
+      {standalone && (
+        <time datetime={finding.date}>{formatFindingDate(finding.date)}</time>
+      )}
+    </div>
+    <Heading class="finding-title" id={titleId}>
+      {standalone ? finding.title : (
+        <a href={`/findings/${finding.id}/`}>{finding.title}</a>
+      )}
+    </Heading>
+  </header>
+
+  <p class="finding-summary">{finding.summary}</p>
+
+  {finding.whyItMatters && (
+    <section class="finding-section finding-assessment">
+      <SectionHeading class="section-label">所感</SectionHeading>
+      <p>{finding.whyItMatters}</p>
+    </section>
+  )}
+
+  {!standalone && finding.tags && finding.tags.length > 0 && (
+    <ul class="tag-list" aria-label="タグ">
+      {finding.tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  )}
+
+  {standalone ? (
+    <section class="finding-section">
+      <SectionHeading class="section-label">情報源</SectionHeading>
+      <SourceList sources={finding.sources} />
+    </section>
+  ) : (
+    <details class="finding-section finding-sources">
+      <summary>情報源</summary>
+      <SourceList sources={finding.sources} />
+    </details>
+  )}
+
+  {standalone && relatedFindings.length > 0 && (
+    <section class="finding-section">
+      <SectionHeading class="section-label">関連Finding</SectionHeading>
+      <ul class="related-list">
+        {relatedFindings.map((related) => (
+          <li><a href={`/findings/${related.id}/`}>{related.title}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+</article>

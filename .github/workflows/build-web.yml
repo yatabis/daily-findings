@@ -41,3 +41,11 @@ jobs:
 
       - name: Web UIをビルドして生成結果を検証
         run: npm run build
+
+      - name: 画面確認用の生成物を保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
+          retention-days: 3
+          if-no-files-found: error

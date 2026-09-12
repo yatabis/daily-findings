@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FindingArticle from "../components/FindingArticle.astro";
 import { formatFindingDate, getFindings } from "../lib/findings";
 
 const findings = await getFindings();
@@ -13,58 +14,21 @@ const grouped = Array.from(
 );
 ---
 
-<BaseLayout>
+<BaseLayout indexPage>
   <main class="main-content">
-    {
-      findings.length === 0 ? (
-        <p class="empty-state">まだFindingはありません。</p>
-      ) : (
-        grouped.map(([date, items]) => (
-          <section class="date-group" aria-labelledby={`date-${date}`}>
-            <h1 class="date-heading" id={`date-${date}`}>
-              {formatFindingDate(date)}
-            </h1>
-
-            <div class="finding-list">
-              {items.map((finding) => (
-                <article class="finding-card">
-                  <div class="finding-meta">
-                    <span class={`status status-${finding.status.toLowerCase()}`}>
-                      {finding.status}
-                    </span>
-                  </div>
-
-                  <h2 class="finding-title">
-                    <a href={`/findings/${finding.id}/`}>{finding.title}</a>
-                  </h2>
-
-                  <p class="finding-summary">{finding.summary}</p>
-
-                  {finding.whyItMatters && (
-                    <div class="why-it-matters">
-                      <span class="section-label">なぜ重要か</span>
-                      <p>{finding.whyItMatters}</p>
-                    </div>
-                  )}
-
-                  {finding.tags && finding.tags.length > 0 && (
-                    <ul class="tag-list" aria-label="タグ">
-                      {finding.tags.map((tag) => <li>{tag}</li>)}
-                    </ul>
-                  )}
-
-                  <div class="card-footer">
-                    <a class="detail-link" href={`/findings/${finding.id}/`}>
-                      詳細を見る
-                    </a>
-                    <span class="source-count">情報源 {finding.sources.length}件</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))
-      )
-    }
+    {findings.length === 0 ? (
+      <p class="empty-state">まだFindingはありません。</p>
+    ) : (
+      grouped.map(([date, items]) => (
+        <section class="date-group" aria-labelledby={`date-${date}`}>
+          <h2 class="date-heading" id={`date-${date}`}>
+            <time datetime={date}>{formatFindingDate(date)}</time>
+          </h2>
+          <div class="finding-list">
+            {items.map((finding) => <FindingArticle finding={finding} />)}
+          </div>
+        </section>
+      ))
+    )}
   </main>
 </BaseLayout>

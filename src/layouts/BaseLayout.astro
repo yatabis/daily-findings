@@ -4,11 +4,13 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  indexPage?: boolean;
 }
 
 const {
   title = "daily-findings",
   description = "AIやローカル推論などのウォッチから残したFindingのログ。",
+  indexPage = false,
 } = Astro.props;
 ---
 
@@ -24,8 +26,11 @@ const {
   <body>
     <div class="page-shell">
       <header class="site-header">
-        <a class="site-name" href="/">daily-findings</a>
-        <p class="site-description">AIやローカル推論などのウォッチから残したFinding。</p>
+        {indexPage ? (
+          <h1 class="site-name">daily-findings</h1>
+        ) : (
+          <a class="site-name" href="/">daily-findings</a>
+        )}
       </header>
       <slot />
     </div>
