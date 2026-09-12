@@ -1,0 +1,36 @@
+---
+import type { FindingSource } from "../lib/findings";
+
+interface Props {
+  sources: FindingSource[];
+}
+
+const { sources } = Astro.props;
+const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
+  dateStyle: "medium",
+  timeZone: "Asia/Tokyo",
+});
+---
+
+<ul class="source-list" aria-label="情報源">
+  {sources.map((source) => {
+    const publisher = source.publisher && !source.title.includes(source.publisher)
+      ? source.publisher
+      : undefined;
+    return (
+      <li>
+        <a href={source.url}>{source.title}</a>
+        {(publisher || source.publishedAt) && (
+          <div class="source-meta">
+            {publisher && <span>{publisher}</span>}
+            {source.publishedAt && (
+              <time datetime={source.publishedAt}>
+                {dateFormatter.format(new Date(source.publishedAt))}
+              </time>
+            )}
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ul>

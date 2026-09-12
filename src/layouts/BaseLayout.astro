@@ -1,0 +1,210 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  indexPage?: boolean;
+}
+
+const {
+  title = "daily-findings",
+  description = "AIやローカル推論などのウォッチから残したFindingのログ。",
+  indexPage = false,
+} = Astro.props;
+
+const themes = [
+  { value: "system", label: "システム", path: "M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1ZM8 21h8m-4-4v4" },
+  { value: "light", label: "ライト", path: "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" },
+  { value: "dark", label: "ダーク", path: "M20.8 13a9 9 0 1 1-9.8-9.8 7 7 0 0 0 9.8 9.8Z" },
+];
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (() => {
+        const storageKey = "daily-findings:theme";
+        const root = document.documentElement;
+        const colorScheme = document.querySelector('meta[name="color-scheme"]');
+        let preference = "system";
+        let syncControl = () => {};
+        let closeMenu = () => {};
+
+        const normalize = (value) => value === "light" || value === "dark" ? value : "system";
+        const readPreference = () => {
+          try {
+            return normalize(localStorage.getItem(storageKey));
+          } catch {
+            // 保存が許可されていなくても、システム追従と画面内の切り替えは使える。
+            return "system";
+          }
+        };
+        const apply = (value) => {
+          preference = normalize(value);
+          if (preference === "system") root.removeAttribute("data-theme");
+          else root.dataset.theme = preference;
+          colorScheme?.setAttribute("content", preference === "system" ? "light dark" : preference);
+          syncControl();
+        };
+
+        // 本文の描画前に保存済みの配色を適用する。
+        apply(readPreference());
+        document.addEventListener("DOMContentLoaded", () => {
+          const control = document.querySelector("[data-theme-control]");
+          const trigger = document.getElementById("theme-trigger");
+          const menu = document.getElementById("theme-menu");
+          if (!control || !trigger || !menu) return;
+          const items = Array.from(menu.querySelectorAll("[data-theme-option]"));
+          const icons = trigger.querySelectorAll("[data-theme-icon]");
+          if (items.length === 0) return;
+
+          syncControl = () => {
+            for (const item of items) {
+              item.setAttribute("aria-checked", String(item.dataset.themeOption === preference));
+            }
+            for (const icon of icons) {
+              icon.toggleAttribute("hidden", icon.dataset.themeIcon !== preference);
+            }
+            const selected = items.find((item) => item.dataset.themeOption === preference);
+            const label = `テーマを変更（現在：${selected?.textContent.trim()}）`;
+            trigger.setAttribute("aria-label", label);
+            trigger.title = label;
+          };
+          closeMenu = (restoreFocus = false) => {
+            menu.hidden = true;
+            trigger.setAttribute("aria-expanded", "false");
+            if (restoreFocus) trigger.focus();
+          };
+          const openMenu = (index = 0) => {
+            menu.hidden = false;
+            trigger.setAttribute("aria-expanded", "true");
+            items[index].focus();
+          };
+          syncControl();
+          control.hidden = false;
+
+          trigger.addEventListener("click", () => {
+            if (menu.hidden) openMenu();
+            else closeMenu(true);
+          });
+          trigger.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              event.preventDefault();
+              openMenu(event.key === "ArrowUp" ? items.length - 1 : 0);
+            }
+          });
+          for (const item of items) {
+            item.addEventListener("click", () => {
+              apply(item.dataset.themeOption);
+              try {
+                if (preference === "system") localStorage.removeItem(storageKey);
+                else localStorage.setItem(storageKey, preference);
+              } catch {
+                // 保存できない環境では、現在のページ内だけに適用する。
+              }
+              closeMenu(true);
+            });
+          }
+          menu.addEventListener("keydown", (event) => {
+            const index = items.indexOf(document.activeElement);
+            let next;
+            if (event.key === "ArrowDown") next = (index + 1) % items.length;
+            if (event.key === "ArrowUp") next = (index - 1 + items.length) % items.length;
+            if (event.key === "Home") next = 0;
+            if (event.key === "End") next = items.length - 1;
+            if (next !== undefined) {
+              event.preventDefault();
+              items[next].focus();
+            }
+            // Tabでは閉じた後、通常のフォーカス順で外へ移動する。
+            if (event.key === "Tab") closeMenu(true);
+            if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+              const match = items.find((item) =>
+                item.dataset.themeOption.startsWith(event.key.toLowerCase()) ||
+                item.textContent.trim().startsWith(event.key),
+              );
+              if (match) {
+                event.preventDefault();
+                match.focus();
+              }
+            }
+          });
+          control.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !menu.hidden) {
+              event.preventDefault();
+              event.stopPropagation();
+              closeMenu(true);
+            }
+          });
+          document.addEventListener("pointerdown", (event) => {
+            if (!menu.hidden && !control.contains(event.target)) {
+              closeMenu(menu.contains(document.activeElement));
+            }
+          });
+          document.addEventListener("focusin", (event) => {
+            if (!menu.hidden && !control.contains(event.target)) closeMenu();
+          });
+        }, { once: true });
+
+        // 別タブでの変更と、履歴から復元したページの表示もそろえる。
+        window.addEventListener("storage", (event) => {
+          if (event.key === storageKey || event.key === null) apply(readPreference());
+        });
+        window.addEventListener("pageshow", (event) => {
+          if (event.persisted) {
+            closeMenu();
+            apply(readPreference());
+          }
+        });
+      })();
+    </script>
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        {indexPage ? (
+          <h1 class="site-name">daily-findings</h1>
+        ) : (
+          <a class="site-name" href="/">daily-findings</a>
+        )}
+        <div class="theme-control" data-theme-control hidden>
+          <button id="theme-trigger" class="theme-trigger" type="button"
+            aria-label="テーマを変更" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu">
+            {themes.map((theme) => (
+              <svg class="theme-icon" data-theme-icon={theme.value} hidden={theme.value !== "system"}
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d={theme.path} />
+              </svg>
+            ))}
+          </button>
+          <div id="theme-menu" class="theme-menu" role="menu" aria-label="テーマ" hidden>
+            {themes.map((theme) => (
+              <button class="theme-option" type="button" role="menuitemradio" tabindex="-1"
+                data-theme-option={theme.value} aria-checked={theme.value === "system" ? "true" : "false"}>
+                <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d={theme.path} />
+                </svg>
+                <span>{theme.label}</span>
+                <svg class="theme-check" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="m5 12 4 4L19 6" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>

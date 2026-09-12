@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FindingArticle from "../../components/FindingArticle.astro";
+import { getFindings, type Finding } from "../../lib/findings";
+
+export async function getStaticPaths() {
+  const findings = await getFindings();
+  const byId = new Map(findings.map((finding) => [finding.id, finding]));
+  return findings.map((finding) => ({
+    params: { id: finding.id },
+    props: {
+      finding,
+      relatedFindings: (finding.relatedFindingIds ?? [])
+        .filter((id) => id !== finding.id)
+        .map((id) => byId.get(id))
+        .filter((related): related is Finding => related !== undefined),
+    },
+  }));
+}
+
+interface Props {
+  finding: Finding;
+  relatedFindings: Finding[];
+}
+
+const { finding, relatedFindings } = Astro.props;
+---
+
+<BaseLayout title={`${finding.title} | daily-findings`} description={finding.summary}>
+  <main class="main-content">
+    <nav class="back-navigation" aria-label="一覧への移動">
+      <a class="back-link" href={`/#finding-${finding.id}`}>← 一覧へ</a>
+    </nav>
+    <FindingArticle finding={finding} relatedFindings={relatedFindings} standalone />
+  </main>
+</BaseLayout>

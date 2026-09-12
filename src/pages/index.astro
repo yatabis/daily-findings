@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FindingArticle from "../components/FindingArticle.astro";
+import { formatFindingDate, getFindings } from "../lib/findings";
+
+const findings = await getFindings();
+const grouped = Array.from(
+  findings.reduce((groups, finding) => {
+    const group = groups.get(finding.date) ?? [];
+    group.push(finding);
+    groups.set(finding.date, group);
+    return groups;
+  }, new Map<string, typeof findings>()),
+);
+---
+
+<BaseLayout indexPage>
+  <main class="main-content">
+    {findings.length === 0 ? (
+      <p class="empty-state">まだFindingはありません。</p>
+    ) : (
+      grouped.map(([date, items]) => (
+        <section class="date-group" aria-labelledby={`date-${date}`}>
+          <h2 class="date-heading" id={`date-${date}`}>
+            <time datetime={date}>{formatFindingDate(date)}</time>
+          </h2>
+          <div class="finding-list">
+            {items.map((finding) => <FindingArticle finding={finding} />)}
+          </div>
+        </section>
+      ))
+    )}
+  </main>
+</BaseLayout>
