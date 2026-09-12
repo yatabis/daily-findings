@@ -1,0 +1,34 @@
+{
+  "id": "deepseek-v41-ced-prefill-bounded-replay",
+  "date": "2026-09-12",
+  "title": "oMLXでDeepSeek V4.1のCED prefill省略がM3 Ultra実測+63%",
+  "summary": "oMLXのdraft PR #3607は、DeepSeek V4.1 FlashのCausal Encoder-Decoder構造を利用し、prefill時にdecoder後半のattentionとMoEを末尾のsliding-window tokenだけへ限定する実装を追加した。M3 Ultra 512GBとoQ4e-mtpで21.4K tokenのcold prefillが約430 tok/sから約700 tok/sへ63%向上し、DSpark decodeのacceptanceは概ね維持された。",
+  "whyItMatters": "CEDが単なる論文上のactive-parameter削減ではなく、Apple Siliconのローカルruntimeでprefill計算そのものを大きく省略できることを示す初期実装。input-heavyなagent workloadでは将来のTTFTを大きく縮めうる。一方で現状はdraft、単一機種・単一モデルの開発者実測で、bounded replayは末尾queryの初期windowを近似するため広範な品質検証がなく、M4 Pro 64GBにはモデル自体が収まらない。",
+  "status": "WATCH",
+  "tags": [
+    "omlx",
+    "deepseek-v4-1",
+    "ced",
+    "prefill",
+    "apple-silicon",
+    "architecture"
+  ],
+  "relatedFindingIds": [
+    "deepseek-v4-1-flash-new-architecture",
+    "deepseek-v41-engram-ssd-tiering",
+    "deepseek-v4-1-reap-2bit-apple-negative-qualification"
+  ],
+  "sources": [
+    {
+      "title": "feat(deepseek_v41): CED prefill skip with SWA bounded replay",
+      "url": "https://github.com/jundot/omlx/pull/3607",
+      "publisher": "GitHub / jundot/omlx",
+      "publishedAt": "2026-09-12T11:37:43Z"
+    },
+    {
+      "title": "DeepSeek-V4.1-Flash",
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+      "publisher": "DeepSeek"
+    }
+  ]
+}
