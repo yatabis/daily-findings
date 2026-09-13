@@ -13,6 +13,8 @@ const image = resolveOgImage(ogImage);
 const path = Astro.url.pathname;
 const isNotFound = /^\/404(?:\.html|\/)?$/u.test(path);
 const canonical = canonicalUrl(path);
+const findingId = path.match(/^\/findings\/([a-z0-9]+(?:-[a-z0-9]+)*)\/$/u)?.[1];
+const markdown = path === "/" ? "/index.md" : findingId ? `/findings/${findingId}.md` : undefined;
 ---
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -24,6 +26,7 @@ const canonical = canonicalUrl(path);
 ) : (
   <>
     <link rel="canonical" href={canonical} />
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
     <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:type" content={path.startsWith("/findings/") ? "article" : "website"} />
