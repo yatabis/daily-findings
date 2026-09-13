@@ -1,0 +1,23 @@
+{
+  "id": "irodori-v4-large-forthcoming",
+  "date": "2026-09-13",
+  "title": "Irodori-TTS v4-Largeの実装準備がmainに追加",
+  "summary": "公式Irodori-TTSのmainにforthcoming v4-Largeへの明示的な言及と学習設定が追加された。v4-Large設定はT5Gemma 2 1B-1B系の事前学習text/caption backboneを使い、DiTをmodel_dim 2048・24 layers・32 heads、speaker encoderを1280次元・14 layers・20 headsとする。body学習とduration predictor学習の設定が分離されている。公開weightsや品質ベンチマークはまだない。",
+  "whyItMatters": "v4.1-Smallの改良だけでなく、明確に大型化した次世代Irodoriが進行している。音質・表現力・Voice Design追従性が上がる可能性がある一方、実際のモデルサイズ、配布時期、Apple Silicon/MLX対応、推論速度は未確定なので現時点では追跡対象。",
+  "status": "WATCH",
+  "tags": [
+    "Irodori-TTS",
+    "TTS",
+    "v4-Large",
+    "Voice-Design",
+    "voice-cloning"
+  ],
+  "sources": [
+    {
+      "title": "Add MeanFlow distillation and v4-Large support",
+      "url": "https://github.com/Aratako/Irodori-TTS/commit/89f9d8fbd4d51ea019867ee1197725ede1df13c5",
+      "publisher": "Aratako",
+      "publishedAt": "2026-09-12T07:45:44Z"
+    }
+  ]
+}

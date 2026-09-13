@@ -1,0 +1,29 @@
+{
+  "id": "irodori-v4-1-small-mf-meanflow",
+  "date": "2026-09-13",
+  "title": "Irodori-TTS v4.1-Small-MFが4-step MeanFlow推論を公開",
+  "summary": "Irodori-TTS-v4.1-SmallをMeanFlowで蒸留した公式チェックポイントが公開された。デフォルト4 sampling stepsで、CFGは蒸留時に教師軌道へ組み込まれるため推論時は各stepにつきconditional DiTを1回だけ評価する。4-step MeanFlowは4-step RFを全読字指標で上回り、JVSの約30秒参照ではCAM++ cosine 0.7429、top-1 97.52%で、40-step RFの0.7521、98.56%にかなり近い。Voice Design、voice cloning、長時間参照、emoji制御は維持される。",
+  "whyItMatters": "Irodori-TTSの会話用途で最大の懸念だったsampling回数とCFG評価コストを大きく削れる可能性があり、レイテンシ改善の本命候補。Apple Silicon向けMLX移植はまだ確認できないが、公式PyTorch/MPS経路で品質と実効レイテンシを今すぐ試す価値がある。",
+  "status": "TRY",
+  "tags": [
+    "Irodori-TTS",
+    "TTS",
+    "MeanFlow",
+    "voice-cloning",
+    "Voice-Design",
+    "latency"
+  ],
+  "sources": [
+    {
+      "title": "Aratako/Irodori-TTS-v4.1-Small-MF",
+      "url": "https://huggingface.co/Aratako/Irodori-TTS-v4.1-Small-MF",
+      "publisher": "Aratako"
+    },
+    {
+      "title": "Add MeanFlow distillation and v4-Large support",
+      "url": "https://github.com/Aratako/Irodori-TTS/commit/89f9d8fbd4d51ea019867ee1197725ede1df13c5",
+      "publisher": "Aratako",
+      "publishedAt": "2026-09-12T07:45:44Z"
+    }
+  ]
+}
