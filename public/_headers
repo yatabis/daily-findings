@@ -1,0 +1,5 @@
+/index.md
+  Content-Type: text/markdown; charset=utf-8
+
+/findings/*.md
+  Content-Type: text/markdown; charset=utf-8
