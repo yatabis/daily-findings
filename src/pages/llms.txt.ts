@@ -11,9 +11,10 @@ TRYは試す価値がある候補、WATCHは継続して追う価値があるも
 
 ## URLs
 
-- Site: ${SITE_URL}
+- Markdown index: ${SITE_URL}index.md
 - RSS: ${SITE_URL}rss.xml
 - Sitemap: ${SITE_URL}sitemap.xml
+- Site: ${SITE_URL}
 - Source: https://github.com/yatabis/daily-findings
 `;
 
