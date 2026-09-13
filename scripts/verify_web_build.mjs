@@ -18,6 +18,7 @@ async function main() {
     .filter((name) => name.endsWith(".json"))
     .sort();
   const indexHtml = await readFile(new URL("index.html", outputDirectory), "utf8");
+  const markdownIndex = await readFile(new URL("index.md", outputDirectory), "utf8");
   const sitemap = await readFile(new URL("sitemap.xml", outputDirectory), "utf8");
   const rss = await readFile(new URL("rss.xml", outputDirectory), "utf8");
   const llms = await readFile(new URL("llms.txt", outputDirectory), "utf8");
@@ -40,9 +41,16 @@ async function main() {
     assert(detailHtml.includes(canonical), `canonicalがありません: ${finding.id}`);
     assert(detailHtml.includes(ogImageUrl), `OGP画像がありません: ${finding.id}`);
     assert(sitemap.includes(canonical), `サイトマップにFindingがありません: ${finding.id}`);
+
+    const markdownPath = `findings/${finding.id}.md`;
+    const markdown = await readFile(new URL(markdownPath, outputDirectory), "utf8");
+    assert(markdown.includes(`# ${finding.title}`) && markdown.includes(canonical), `Markdown版が不完全です: ${finding.id}`);
+    assert(markdownIndex.includes(`${siteUrl}${markdownPath}`), `Markdown一覧にFindingがありません: ${finding.id}`);
+    assert(detailHtml.includes(`/${markdownPath}`), `HTMLからMarkdown版への案内がありません: ${finding.id}`);
   }
 
   assert.equal(indexHtml.includes('class="empty-state"'), fileNames.length === 0, "一覧の空表示とFindingの件数が一致しません。");
+  assert(indexHtml.includes('/index.md'), "トップページからMarkdown一覧への案内がありません。");
   for (const path of ["favicon.ico", "favicon.png", "apple-touch-icon.png", "robots.txt"]) {
     await readFile(new URL(path, outputDirectory));
   }
@@ -52,7 +60,7 @@ async function main() {
   assert(indexHtml.includes(ogImageUrl), "トップページにOGP画像がありません。");
   assert(rss.includes("<rss") && rss.includes(siteUrl), "RSSが生成されていません。");
   assert(sitemap.includes("<urlset") && sitemap.includes(siteUrl), "サイトマップが生成されていません。");
-  assert(llms.startsWith("# daily-findings") && llms.includes("rss.xml") && llms.includes("sitemap.xml"), "llms.txtが不完全です。");
+  assert(llms.startsWith("# daily-findings") && llms.includes("index.md") && llms.includes("rss.xml") && llms.includes("sitemap.xml"), "llms.txtが不完全です。");
 
   console.log(`${fileNames.length}件のFindingと主要な公開ファイルの生成を確認しました。`);
 }
