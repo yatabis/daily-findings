@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "test": "node --test tests/publication.test.mjs",
-    "build": "npm test && astro build && node scripts/verify_web_build.mjs && node scripts/verify_publication.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "build": "npm test && astro build && node scripts/verify_web_build.mjs && node scripts/verify_publication.mjs && node scripts/verify_agent_content.mjs",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy"
   },

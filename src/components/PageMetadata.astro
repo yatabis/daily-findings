@@ -1,5 +1,6 @@
 ---
 import { SITE_URL, SITE_TITLE, canonicalUrl } from "../lib/publication.mjs";
+import { markdownPath } from "../lib/agent-content.mjs";
 
 interface Props {
   title: string;
@@ -10,17 +11,21 @@ const { title, description } = Astro.props;
 const path = Astro.url.pathname;
 const isNotFound = /^\/404(?:\.html|\/)?$/u.test(path);
 const canonical = canonicalUrl(path);
+const findingId = path.match(/^\/findings\/([a-z0-9]+(?:-[a-z0-9]+)*)\/$/u)?.[1];
+const markdown = findingId ? markdownPath(findingId) : path === "/" ? "/index.md" : undefined;
 ---
 
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={`${SITE_URL}rss.xml`} />
+<link rel="describedby" href="/llms.txt" type="text/plain" />
 {isNotFound ? (
   <meta name="robots" content="noindex" />
 ) : (
   <>
     <link rel="canonical" href={canonical} />
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
     <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:type" content={path.startsWith("/findings/") ? "article" : "website"} />
