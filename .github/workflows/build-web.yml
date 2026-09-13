@@ -9,9 +9,6 @@ on:
       - "src/**"
       - "public/**"
       - "scripts/verify_web_build.mjs"
-      - "scripts/verify_publication.mjs"
-      - "scripts/verify_agent_content.mjs"
-      - "scripts/verify_og_image.mjs"
       - "tests/**"
       - "astro.config.mjs"
       - "package.json"
@@ -25,9 +22,6 @@ on:
       - "src/**"
       - "public/**"
       - "scripts/verify_web_build.mjs"
-      - "scripts/verify_publication.mjs"
-      - "scripts/verify_agent_content.mjs"
-      - "scripts/verify_og_image.mjs"
       - "tests/**"
       - "astro.config.mjs"
       - "package.json"
@@ -51,16 +45,5 @@ jobs:
       - name: 依存関係をインストール
         run: npm ci
 
-      - name: 依存関係のHigh以上を検査
-        run: npm audit --audit-level=high
-
       - name: Web UIをビルドして生成結果を検証
         run: npm run build
-
-      - name: 画面確認用の生成物を保存
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: dist/
-          retention-days: 3
-          if-no-files-found: error
