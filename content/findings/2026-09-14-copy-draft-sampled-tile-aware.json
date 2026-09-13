@@ -1,0 +1,27 @@
+{
+  "id": "copy-draft-sampled-tile-aware",
+  "date": "2026-09-14",
+  "title": "copy-draftをsampling・prefix cache・MLX tile境界まで含めて適応制御",
+  "summary": "Rapid-MLXはprompt copy-draftをsampling中にも正しい補正付きで利用できるようにし、prefix cache hit時も物理batch tailではなくrequest全体のprompt token列からcopy indexを構築するよう修正した。さらにverify幅をMLX量子化matmulの32-row tile境界と実測acceptanceに合わせて適応させ、M4 ProのQwen3.8-27B 4bitではcode renameで約+21.6%、bugfixで約+30.8%の改善を報告している。3-turn会話ではcache hit後のturnで約23 tok/sから45〜47 tok/sまで伸びた。",
+  "whyItMatters": "coding agentでは過去prompt内のコードを再出力・編集する局面が多い。speculation controllerを固定depthではなく、論理履歴・sampling correctness・kernelのtile cost・そのturnのacceptanceをまとめて制御する設計は独自runtimeへそのまま持ち込む価値が高い。",
+  "status": "TRY",
+  "tags": [
+    "MLX",
+    "speculative-decoding",
+    "MTP",
+    "agent",
+    "scheduling"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX #3417: perf(mtp): let copy-draft reach sampled and cache-reusing requests",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3417",
+      "publisher": "GitHub"
+    },
+    {
+      "title": "Rapid-MLX #3398: perf(mtp): size copy-drafts from measured acceptance, up to the tile edge",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3398",
+      "publisher": "GitHub"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "qwen36-fused-gdn-single-token",
+  "date": "2026-09-14",
+  "title": "GDN single-token decodeをstate更新まで含む1 Metal launchへ融合",
+  "summary": "Rapid-MLXはQwen3.6-35B-A3Bのsingle-token GatedDeltaNetで、causal convolution、Q/K normalization、recurrent state update、gated RMSNormを1つのMetal kernelへ融合した。M3 Ultra 256GBのtext pathでdecodeは114.65から128.00 tok/s（+11.7%）となり、vision-capable pathへの同じ最適化では62.3から79.1 tok/s（+27.0%）。BF16 convolution cacheとFP32 recurrent stateを含む逐次stepでbit-exactを確認している。",
+  "whyItMatters": "recurrent系は演算量より小さなlaunchとstate read/writeの連鎖がdecode律速になりやすい。MLX上でもprojection以外の1-step recurrenceを専用Metal kernelへまとめる価値が明確で、GDN系モデルの独自runtimeで優先度の高い実装候補になる。",
+  "status": "TRY",
+  "tags": [
+    "MLX",
+    "Metal",
+    "GDN",
+    "recurrent-state",
+    "decode"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX #3383: perf: fuse Qwen3.6 GDN single-token decode",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3383",
+      "publisher": "GitHub"
+    },
+    {
+      "title": "Rapid-MLX #3391: perf: enable fused Qwen GDN decode for MLLM",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3391",
+      "publisher": "GitHub"
+    }
+  ]
+}

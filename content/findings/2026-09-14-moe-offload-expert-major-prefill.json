@@ -1,0 +1,22 @@
+{
+  "id": "moe-offload-expert-major-prefill",
+  "date": "2026-09-14",
+  "title": "MoEオフロードprefillをexpert境界でchunkすると再fetchを大幅に削減",
+  "summary": "oMLXは、expert cache容量を超えるMoE prefillをtoken軸で分割する方式から、routeをexpert順に並べてcapacity個のdistinct expert単位で分割する方式へ変更した。M5 Max 128GB・Gemma 4 26B-A4B 4bitの585-token promptでは、12.5% residency時のexpert fetchが64,369回から2,913回へ減り、warm TTFTは16.60秒から0.97秒へ短縮された。decode pathは変更していない。",
+  "whyItMatters": "オフロード時のchunkingはtoken数ではなく、実際の希少資源であるresident expert working setに沿って切るべきことを示す。MLXベースの独自runtimeでもExpertCacheとprefill plannerへ移植しやすく、256GB級で大規模MoEを部分常駐させる場合に直接効く。",
+  "status": "TRY",
+  "tags": [
+    "MLX",
+    "MoE",
+    "expert-offload",
+    "prefill",
+    "M5"
+  ],
+  "sources": [
+    {
+      "title": "oMLX #3654: perf(moe): chunk over-capacity prefill on expert boundaries",
+      "url": "https://github.com/jundot/omlx/pull/3654",
+      "publisher": "GitHub"
+    }
+  ]
+}

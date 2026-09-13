@@ -1,0 +1,22 @@
+{
+  "id": "sdpa-transient-aware-memory-planning",
+  "date": "2026-09-14",
+  "title": "長文memory plannerはKVだけでなく選択attention routeのprefill transientを同じ式で価格付け",
+  "summary": "oMLXのdistributed plannerではKV容量だけで最大contextを算定していたため、runtime admissionが課すSDPA transientを見落とし、2×64GB構成で425,984 tokenを計画しながら実際には約320K超を拒否する不整合が起きた。head_dim 256・320K付近では純KV 8.7GBに対しKV+SDPAが24.25GB。修正案はplannerとruntime guardが同じtransient estimatorを使い、fused/tiled/unfused route込みのfeasibilityをbinary searchする。",
+  "whyItMatters": "Unified Memoryで長文を詰める場合、steady-state KVより最後のprefill chunkのscore/workspaceが支配的になることがある。ExecutionPlanが選ぶkernel routeからpersistent stateとtransient peakの双方を同じmemory modelへ流す構造は重要。ただし現PRはdistributed向けdraftで物理再検証も未実施のため、まず設計として追う。",
+  "status": "WATCH",
+  "tags": [
+    "MLX",
+    "memory-planning",
+    "SDPA",
+    "prefill",
+    "long-context"
+  ],
+  "sources": [
+    {
+      "title": "oMLX #3651: fix(cluster): budget the SDPA prefill transient the admission guard charges",
+      "url": "https://github.com/jundot/omlx/pull/3651",
+      "publisher": "GitHub"
+    }
+  ]
+}

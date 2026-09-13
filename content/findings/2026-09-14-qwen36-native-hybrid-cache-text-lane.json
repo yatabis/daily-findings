@@ -1,0 +1,22 @@
+{
+  "id": "qwen36-native-hybrid-cache-text-lane",
+  "date": "2026-09-14",
+  "title": "同一VLM重みを共有したままtext requestだけnative hybrid-cache laneへ分岐",
+  "summary": "Rapid-MLXはQwen3.6-35B-A3Bのvision-capable modelを一度だけloadしたまま、text-only requestをmlx-lm側のnative hybrid-cache schedulerへ、画像・動画requestを従来のmultimodal schedulerへ振り分ける二重laneを実装した。M3 Ultra 256GBではtext decode中央値が72.86から107.63 tok/s（+48.2%）へ改善し、追加active memoryは約17MBだった。",
+  "whyItMatters": "model weightの所有とrequestごとのexecution/cache ABIを分離すれば、機能豊富な共通pathへ全requestを押し込む必要がない。独自runtimeでも同一weight graphに複数のState/Execution laneを持たせ、request shapeに応じて最もnativeなcache contractを選ぶ設計が有効。",
+  "status": "TRY",
+  "tags": [
+    "MLX",
+    "hybrid-cache",
+    "multimodal",
+    "scheduler",
+    "decode"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX #3400: perf(qwen36): accelerate text with native hybrid caches",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3400",
+      "publisher": "GitHub"
+    }
+  ]
+}
