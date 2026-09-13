@@ -1,16 +1,21 @@
 ---
 import "../styles/global.css";
+import PageMetadata from "../components/PageMetadata.astro";
+import type { OgImage } from "../lib/og-image.mjs";
+import { SITE_DESCRIPTION } from "../lib/publication.mjs";
 
 interface Props {
   title?: string;
   description?: string;
   indexPage?: boolean;
+  ogImage?: OgImage;
 }
 
 const {
   title = "daily-findings",
-  description = "AIやローカル推論などのウォッチから残したFindingのログ。",
+  description = SITE_DESCRIPTION,
   indexPage = false,
+  ogImage,
 } = Astro.props;
 
 const themes = [
@@ -28,6 +33,7 @@ const themes = [
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <PageMetadata title={title} description={description} ogImage={ogImage} />
     <script is:inline>
       (() => {
         const storageKey = "daily-findings:theme";

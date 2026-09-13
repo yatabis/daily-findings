@@ -7,9 +7,12 @@ on:
     paths:
       - "content/findings/**"
       - "src/**"
+      - "public/**"
       - "scripts/verify_web_build.mjs"
+      - "tests/**"
       - "astro.config.mjs"
       - "package.json"
+      - "package-lock.json"
       - "tsconfig.json"
       - "wrangler.jsonc"
       - ".github/workflows/build-web.yml"
@@ -17,9 +20,12 @@ on:
     paths:
       - "content/findings/**"
       - "src/**"
+      - "public/**"
       - "scripts/verify_web_build.mjs"
+      - "tests/**"
       - "astro.config.mjs"
       - "package.json"
+      - "package-lock.json"
       - "tsconfig.json"
       - "wrangler.jsonc"
       - ".github/workflows/build-web.yml"
@@ -37,15 +43,7 @@ jobs:
           node-version: "24"
 
       - name: 依存関係をインストール
-        run: npm install
+        run: npm ci
 
       - name: Web UIをビルドして生成結果を検証
         run: npm run build
-
-      - name: 画面確認用の生成物を保存
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: dist/
-          retention-days: 3
-          if-no-files-found: error
