@@ -1,13 +1,16 @@
 ---
 import { SITE_URL, SITE_TITLE, canonicalUrl } from "../lib/publication.mjs";
 import { markdownPath } from "../lib/agent-content.mjs";
+import { resolveOgImage, type OgImage } from "../lib/og-image.mjs";
 
 interface Props {
   title: string;
   description: string;
+  ogImage?: OgImage;
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogImage } = Astro.props;
+const image = resolveOgImage(ogImage);
 const path = Astro.url.pathname;
 const isNotFound = /^\/404(?:\.html|\/)?$/u.test(path);
 const canonical = canonicalUrl(path);
@@ -32,5 +35,15 @@ const markdown = findingId ? markdownPath(findingId) : path === "/" ? "/index.md
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image.url} />
+    <meta property="og:image:type" content={image.type} />
+    <meta property="og:image:width" content={String(image.width)} />
+    <meta property="og:image:height" content={String(image.height)} />
+    <meta property="og:image:alt" content={image.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image.url} />
+    <meta name="twitter:image:alt" content={image.alt} />
   </>
 )}

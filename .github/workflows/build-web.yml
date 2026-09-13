@@ -11,9 +11,11 @@ on:
       - "scripts/verify_web_build.mjs"
       - "scripts/verify_publication.mjs"
       - "scripts/verify_agent_content.mjs"
+      - "scripts/verify_og_image.mjs"
       - "tests/**"
       - "astro.config.mjs"
       - "package.json"
+      - "package-lock.json"
       - "tsconfig.json"
       - "wrangler.jsonc"
       - ".github/workflows/build-web.yml"
@@ -25,9 +27,11 @@ on:
       - "scripts/verify_web_build.mjs"
       - "scripts/verify_publication.mjs"
       - "scripts/verify_agent_content.mjs"
+      - "scripts/verify_og_image.mjs"
       - "tests/**"
       - "astro.config.mjs"
       - "package.json"
+      - "package-lock.json"
       - "tsconfig.json"
       - "wrangler.jsonc"
       - ".github/workflows/build-web.yml"
@@ -45,7 +49,10 @@ jobs:
           node-version: "24"
 
       - name: 依存関係をインストール
-        run: npm install
+        run: npm ci
+
+      - name: 依存関係のHigh以上を検査
+        run: npm audit --audit-level=high
 
       - name: Web UIをビルドして生成結果を検証
         run: npm run build
