@@ -1,0 +1,22 @@
+{
+  "id": "draw-things-local-code-public-beta",
+  "date": "2026-09-13",
+  "title": "Draw ThingsがOSサンドボックス内で完結するLocal Codeを公開ベータ化",
+  "summary": "Draw Thingsは2026年9月12日、Apple App SandboxとHardened Runtimeの内部にLLM推論エンジン・モデル別ハーネス・in-process agent runtimeをまとめたLocal Codeの公開ベータを開始した。DeepSeek 4 Flash 0731の2/3-bit版を48GiB以上で推奨し、Qwen3.8-27Bの2-bit/4-bit版も提供する。Python、Node.js、Lean、ssh、ripgrep等を約500MiBのランタイムへ同梱し、ローカルcoding agentをOS強制の権限境界内で成立させる方向を示した。",
+  "whyItMatters": "ローカルcoding agentの安全境界を独自permission layerではなくmacOSのApp Sandboxに置き、推論・ツール実行・モデル固有ハーネスを一体化する設計は新しい実用方向。ただし現状はTestFlightベータで、速度・品質は開発側評価が中心、既存Codex/Claude Code相当の外部ツールチェーン互換性も未確立なので今すぐ乗り換える段階ではない。",
+  "status": "WATCH",
+  "tags": [
+    "apple-silicon",
+    "coding-agent",
+    "sandbox",
+    "local-llm",
+    "inference-runtime"
+  ],
+  "sources": [
+    {
+      "title": "Public Beta of Local Code by Draw Things",
+      "url": "https://releases.drawthings.ai/p/public-beta-of-local-code-by-draw",
+      "publisher": "Draw Things"
+    }
+  ]
+}

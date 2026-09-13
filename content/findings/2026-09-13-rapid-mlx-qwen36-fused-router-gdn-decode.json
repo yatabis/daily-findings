@@ -1,0 +1,30 @@
+{
+  "id": "rapid-mlx-qwen36-fused-router-gdn-decode",
+  "date": "2026-09-13",
+  "title": "Rapid-MLX mainでQwen3.6-35B-A3B decodeのMetal fusionが進展",
+  "summary": "Rapid-MLXは2026年9月13日、Qwen3.6-35B-A3B向けにMoE router top-kとGatedDeltaNet single-token decodeの専用Metal fusionをmainへmergeした。M3 Ultra 256GBの4-bit checkpointでrouter単体は中央値+5.1%、GDN fusionは114.65から128.00 tok/sで+11.7%。先行するgate/up・projection等のfusionを含むmain全体では約89から128 tok/s（約+44%）と報告され、対象A/Bではtoken列とstateの同一性を検証している。",
+  "whyItMatters": "ユーザーのQwen3.6-35B-A3B級という現行baselineへ直接効く最適化で、汎用MLX経路の小kernel launchをモデル形状に合わせて融合する余地がまだ大きいことを示す。ただし最新stable 0.14.1には未収録で、M4 Pro 64GBでの同条件A/Bもない。次のstable releaseで両PRが入った時点で、現行MLX/llama.cpp運用との比較対象にする価値がある。",
+  "status": "HOLD",
+  "tags": [
+    "rapid-mlx",
+    "qwen3-6",
+    "metal",
+    "gated-deltanet",
+    "moe",
+    "apple-silicon"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3381: fuse Qwen3.6 MoE router top-k",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3381",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-13T05:37:14Z"
+    },
+    {
+      "title": "Rapid-MLX PR #3383: fuse Qwen3.6 GDN single-token decode",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3383",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-13T06:57:28Z"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "omlx-checkpoint-backed-moe-expert-offload",
+  "date": "2026-09-13",
+  "title": "oMLXがcheckpoint直読みのMoE expert offloadをmainへ統合",
+  "summary": "oMLX PR #2595は、MoEの非resident expertをcheckpoint自身のsafetensors mmapからcache miss時に読み込む固定slot LRU cacheをmainへ統合した。Gemma-4-26B-A4B 4-bitではresident 100%の14.20GB・122.5 tok/sから、50%で7.78GB・59.4 tok/s、25%で4.57GB・40.1 tok/s、12.5%で2.96GB・29.3 tok/sとなり、25%では受入テストのgreedy生成がresident版とbit-identicalだった。OLMoE-1B-7Bでも3.89GBから1.17GBへの削減を確認している。",
+  "whyItMatters": "モデル全体を低bit化して品質を落とす代わりに、選ばれたexpertだけを正確なweightのままresident化し残りをSSDから取ることで、Unified Memory上限を超えるMoEを動かす設計が実装段階に入った。64GB Macでより大きなMoEを扱う方向として重要だが、低resident率ではTTFT/decodeが大きく落ち、Qwen3.6/3.8やGLM-5系の実機検証もまだ不足している。",
+  "status": "WATCH",
+  "tags": [
+    "omlx",
+    "mlx",
+    "moe",
+    "expert-offload",
+    "apple-silicon",
+    "ssd"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #2595: expert offload — stream non-resident experts from the checkpoint",
+      "url": "https://github.com/jundot/omlx/pull/2595",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-11T13:36:09Z"
+    }
+  ]
+}
