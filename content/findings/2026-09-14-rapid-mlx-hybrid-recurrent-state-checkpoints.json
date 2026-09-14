@@ -1,0 +1,23 @@
+{
+  "id": "rapid-mlx-hybrid-recurrent-state-checkpoints",
+  "date": "2026-09-14",
+  "title": "hybrid modelのprefix cacheをrecurrent-state checkpointから途中再開",
+  "summary": "Rapid-MLX PR #3435は、GatedDeltaNet/Mamba系の非trimmable recurrent stateをprefill chunk境界でcheckpointし、長いpromptが途中で分岐した場合に直前checkpointへsnapしてKVとrecurrent stateを同じ位置から再開できるようにした。M3 Ultra・Qwen3.8-27B-4bit・MTP onの約5700-token文書では、後半編集時のTTFTが約19.5秒のcold prefillから7.1〜7.5秒へ短縮し、比較したgreedy回答はcold pathとbyte-identicalだった。",
+  "whyItMatters": "hybrid/recurrent architectureではKV cacheのように任意位置へsliceできないstateがprefix reuseを阻む。recurrent stateを疎なcheckpointとして保存して再開可能にする方法は、GDN/Mamba系を長期agent sessionで使う際のcache ABIとして汎用性がある。",
+  "status": "WATCH",
+  "tags": [
+    "Rapid-MLX",
+    "recurrent-state",
+    "prefix-cache",
+    "GatedDeltaNet",
+    "agent"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3435: perf(cache): resume hybrid prompts from recurrent-state checkpoints",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3435",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-14T01:31:10Z"
+    }
+  ]
+}

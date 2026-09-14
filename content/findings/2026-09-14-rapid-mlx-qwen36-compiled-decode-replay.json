@@ -1,0 +1,27 @@
+{
+  "id": "rapid-mlx-qwen36-compiled-decode-replay",
+  "date": "2026-09-14",
+  "title": "Qwen3.6-35B-A3Bのsingle-request decodeをcompiled replay化",
+  "summary": "Rapid-MLX PR #3449は、Qwen3.6-35B-A3Bの通常batch-one text decodeで毎token再構築していたPython/MLX graphを、KVとrecurrent stateを明示入出力にした固定shapeのcompiled replayへ置き換えた。M3 Ultra 256GB・4bitでは5種workload中央値が124.55から143.38 tok/s（+15.1%）、fresh-process HTTP coding requestが101.7から121.6 tok/s（+19.6%）となり、paired gateではtoken/responseが一致した。現時点ではmainのみでstable release未収録。",
+  "whyItMatters": "既にrouter/GDN/MoE fusionまで行った後にもgraph constructionが15〜20%残っていたことを示す。Qwen3.6-35B-A3Bを基準にするApple Silicon runtimeでは、kernel単体の最適化だけでなくsingle-token forward全体のshape-stable replayを設計対象にする価値が高い。",
+  "status": "HOLD",
+  "tags": [
+    "Rapid-MLX",
+    "Qwen3.6",
+    "MLX",
+    "compiled-replay",
+    "decode"
+  ],
+  "relatedFindingIds": [
+    "qwen36-fused-gdn-single-token",
+    "qwen36-native-hybrid-cache-text-lane"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3449: perf(qwen36): compile shape-stable decode replay",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3449",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-14T03:30:46Z"
+    }
+  ]
+}
