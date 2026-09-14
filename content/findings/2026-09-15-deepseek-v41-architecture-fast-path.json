@@ -1,0 +1,24 @@
+{
+  "id": "deepseek-v41-architecture-fast-path",
+  "date": "2026-09-15",
+  "title": "DeepSeek V4.1はarchitecture-specific fast pathでM3 Ultra decode約1.7倍",
+  "summary": "oMLX PR #3590はDeepSeek V4.1 Flash向けにSwitchGLU、wSDPA/native sparse prefill、deferred mHC、CSA2 runtime、Engram mmap/hot cacheを一体化したfast pathを提案している。M3 Ultra・MLX 0.32.2ではstockの約15.5 tok/s decode・337 tok/s prefillから、Engram stubで26.5〜27.2 tok/s・490〜500 tok/sへ向上し、B=8 aggregateは約79.5 tok/s。",
+  "whyItMatters": "V4.1のような新構成ではgenericなoperator高速化だけでなく、HyperConnection・sparse attention・Engram・batch stateをまとめたarchitecture-specific laneが効くことを示す。独自runtimeの責務分解には有用だが、PRは未mergeで実weight smoke項目も残り、M5系データもないためHOLD。",
+  "status": "HOLD",
+  "tags": [
+    "oMLX",
+    "DeepSeek-V4.1",
+    "sparse-attention",
+    "Engram",
+    "HyperConnection",
+    "batching"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3590: feat(deepseek_v41): fast path ~27 tok/s decode on M3 Ultra",
+      "url": "https://github.com/jundot/omlx/pull/3590",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-11T21:33:25Z"
+    }
+  ]
+}

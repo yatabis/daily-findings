@@ -1,0 +1,24 @@
+{
+  "id": "m5-int8-activation-q4q5-prefill",
+  "date": "2026-09-15",
+  "title": "M5 TensorOpsでQ4/Q5 prefillをINT8 activation化し約32%高速化",
+  "summary": "oMLX PR #3548は、M5のTensorOpsでprefillのeligible matmulをint8×int8→int32へ変換し、Q4/Q5 affine weightをpacked checkpointから直接fragmentへ展開するkernelを追加した。M5 Pro・Qwen3.8-27B・pp4096では391.8→518.5 tok/s、Q4 GEMMは42 TOP/sで測定上限44.21 TOP/sに近い。既存weight streamをそのまま読むため追加weight memoryは不要。",
+  "whyItMatters": "ActivationFormatをweight quantizationとは別のExecutionPlan次元として扱う好例で、M5 Ultraでも再検証価値が高い。一方でactivation INT8は数値を変え、実workload品質評価が未完了で、同じMLP callを包むANE prefillとも排他的なため、現時点では標準化せずHOLDが妥当。",
+  "status": "HOLD",
+  "tags": [
+    "oMLX",
+    "M5",
+    "TensorOps",
+    "INT8",
+    "quantization",
+    "prefill"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3548: feat(m5): add INT8-activation prefill kernels for Qwen3.5/3.6/3.8",
+      "url": "https://github.com/jundot/omlx/pull/3548",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-10T05:47:02Z"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "glm53-owned-mtp-transaction",
+  "date": "2026-09-15",
+  "title": "GLM-5.3 FlashのMTPをruntime-owned transactionとして切り出し、AR同値で約34%高速化",
+  "summary": "Rapid-MLX PR #3481は、official mlx-vlm 0.7.1のtarget/cache primitiveを利用しつつ、proposal・verify・rollbackをRapid側で所有するMTP transactionとimmutable Q4 sidecarを組み合わせた。6タスクの実機qualificationではAR比中央値+34.1%、35.54 tok/s、12/12 passでreasoning/final outputはbyte-identical。非対応shapeやsamplingはARへfail-closed fallbackする。",
+  "whyItMatters": "speculative decodingをgeneration shell固有機能にせず、StateBundle上のtransactionとして所有し、target/drafter pairのstructural capabilityを検証してrequest単位でARへ退避する設計は独自MLX runtimeへ移しやすい。GLM-5.3 Flashを使うなら今すぐ再現検証する価値がある。",
+  "status": "TRY",
+  "tags": [
+    "Rapid-MLX",
+    "GLM-5.3",
+    "MTP",
+    "speculative-decoding",
+    "state-transaction"
+  ],
+  "sources": [
+    {
+      "title": "Rapid-MLX PR #3481: perf(glm5): activate owned MTP on tagged runtime",
+      "url": "https://github.com/raullenchai/Rapid-MLX/pull/3481",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-14T20:16:21Z"
+    }
+  ]
+}

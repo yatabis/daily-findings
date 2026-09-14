@@ -1,0 +1,23 @@
+{
+  "id": "mlx-gated-delta-simd-row-packing",
+  "date": "2026-09-15",
+  "title": "Gated Delta sequential kernelで8 value rows/SIMD-group packing",
+  "summary": "MLX PR #4409はgated_delta_seqで8 value rowsを1 SIMD-groupへ詰め、各rowを4 laneで処理するlayoutを実装した。M5 MaxではB=8,T=8,fp32で1.414x、sequentialを強制したT=2048では条件により1.25〜1.97xを計測した。一方、通常のM5長文で使われる既存NAX-16 controlには有意差がなく、model E2Eも未測定。",
+  "whyItMatters": "recurrent kernelでもrows-per-SIMD-groupやthreadgroup geometryをautotune対象にする価値がある。ただし大きい速度倍率の多くは通常dispatchを無効化したsequential比較で、現行M5 fast pathへの優位性は未証明なのでHOLD。",
+  "status": "HOLD",
+  "tags": [
+    "MLX",
+    "M5",
+    "GatedDeltaNet",
+    "Metal",
+    "SIMD",
+    "kernel-autotuning"
+  ],
+  "sources": [
+    {
+      "title": "MLX PR #4409: Pack eight value rows per SIMD-group in gated_delta_seq",
+      "url": "https://github.com/ml-explore/mlx/pull/4409",
+      "publisher": "GitHub"
+    }
+  ]
+}
