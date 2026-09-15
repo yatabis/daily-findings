@@ -1,0 +1,24 @@
+{
+  "id": "omlx-deterministic-sdpa256-route",
+  "date": "2026-09-16",
+  "title": "oMLXがSDPA256のkernel routeをlive memory依存から決定論的planへ変更",
+  "summary": "oMLX PR #3685は、head_dim=256でfused bounded SDPAとfull-score unfused SDPAの選択をprocessのlive memory headroomで毎call切り替えていたため、同一greedy requestでもprocess履歴だけで異なるreplyになる問題を修正する。route pricingをmodel parameter、予測KV、固定recurrent state、hot-cache budget、stable physical capから計算する`provider(kv_len)`へ変更し、routeをmodel/settings/request geometryの純関数にした。M4 Max 64GBの68,034-token promptでは修正後10/10 runでroute・first-token logits・replyが一致し、peak memoryも30.35GBから28.39GBへ低下した。",
+  "whyItMatters": "数値的に等価でないkernel routeをvolatileな全体memory状態で切り替えると、schedulerの履歴がモデル出力へ漏れる。独自runtimeではExecutionPlanの算術経路をrequest/model geometryから決定論的に固定し、memory pressureはadmissionや明示的chunkingへ分離するべきという強いcorrectness要件になる。",
+  "status": "TRY",
+  "tags": [
+    "omlx",
+    "attention",
+    "sdpa",
+    "determinism",
+    "memory-planning",
+    "correctness"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3685: fix(attention): make SDPA256 route selection deterministic",
+      "url": "https://github.com/jundot/omlx/pull/3685",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-15T16:29:40Z"
+    }
+  ]
+}

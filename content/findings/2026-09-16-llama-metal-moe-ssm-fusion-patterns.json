@@ -1,0 +1,28 @@
+{
+  "id": "llama-metal-moe-ssm-fusion-patterns",
+  "date": "2026-09-16",
+  "title": "llama.cppがMetalでMoE routing・reduction・SSM_CONVを追加融合",
+  "summary": "llama.cpp PR #28948はMetal backendに、SOFT_MAX+ARGSORT+GET_ROWSのtop-k MoE routing、MUL+expert view+ADD chainのMoE weighted reduction、RMS_NORM+SCALE、SSM_CONV+SiLUのfusionを追加し、小さなruntime分岐にはMetal function constantsを使う。M2 UltraではQwen3.5-MoE 35B-A3Bでpp2048が約4〜5%、tg32が約9〜10%、Qwen3.5 27Bでtg32が約4〜5%改善し、fusion/backend test群は全件通過した。",
+  "whyItMatters": "既に個別のQwen向けfusionは観測しているが、今回はMoE routingからweighted reduction、SSM convolutionまでgraph patternとしてMetal backendへ一般化している。独自runtimeでもlaunch削減をモデル固有コードだけにせず、graph rewrite + function-constant specializationとして持つ設計を試す価値がある。M5 Ultraでは倍率を再測定する必要がある。",
+  "status": "TRY",
+  "tags": [
+    "llama-cpp",
+    "metal",
+    "moe",
+    "ssm",
+    "fusion",
+    "decode"
+  ],
+  "relatedFindingIds": [
+    "rapid-mlx-qwen36-fused-router-gdn-decode",
+    "qwen36-fused-gdn-single-token"
+  ],
+  "sources": [
+    {
+      "title": "llama.cpp PR #28948: metal : add MoE and SSM_CONV fusion optimizations",
+      "url": "https://github.com/ggml-org/llama.cpp/pull/28948",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-15T12:24:09Z"
+    }
+  ]
+}

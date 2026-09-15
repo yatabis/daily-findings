@@ -1,0 +1,27 @@
+{
+  "id": "omlx-dynamic-ssd-expert-streaming",
+  "date": "2026-09-16",
+  "title": "oMLXがSSD MoE expert streamingへ動的residency governorとMTP gateを追加",
+  "summary": "oMLX PR #3672は、Unified Memoryを超えるMoE向けSSD expert streamingをgeneric coreへ整理し、byte-bound slot arena、LRU/S3-FIFO、lock-free preadv shard reads、free-RAMとdecode stallに応じてresidencyを伸縮するgovernor、MTPのI/O増幅を見て自動parkするgateを統合する。M4 Pro 48GB + USB4 NVMeで99GB Qwen3.8-Flash-Nextは3.04 tok/s、169GB GLM-5.3-Flashは1.00 tok/s、402GB DeepSeek V4.1は0.87 tok/sで動作。streaming下のMTPはQwenで約9%、V4.1で約14%の実測悪化となり、preadv span readは従来mmap gatherより7〜8倍速いと報告している。",
+  "whyItMatters": "実用速度にはまだ遠いが、resident capacityを動的に変えてもmodel instanceをreloadせず、speculationの可否までI/O amplification込みで決める構造は大規模MoEのResidencyPlanに重要。既存の固定slot expert offloadの次段として監視する価値がある。",
+  "status": "WATCH",
+  "tags": [
+    "omlx",
+    "moe",
+    "ssd",
+    "expert-streaming",
+    "residency",
+    "mtp"
+  ],
+  "relatedFindingIds": [
+    "omlx-checkpoint-backed-moe-expert-offload"
+  ],
+  "sources": [
+    {
+      "title": "oMLX PR #3672: feat: SSD-backed MoE expert streaming with dynamic budgets",
+      "url": "https://github.com/jundot/omlx/pull/3672",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-15T04:10:09Z"
+    }
+  ]
+}

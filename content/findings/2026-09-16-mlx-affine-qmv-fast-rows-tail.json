@@ -1,0 +1,24 @@
+{
+  "id": "mlx-affine-qmv-fast-rows-tail",
+  "date": "2026-09-16",
+  "title": "MLXが非8倍数出力のAffine QMVをfast pathへ拡張",
+  "summary": "MLX PR #4516は、出力行数が8の倍数でないAffine QMVがgeneric kernelへ落ちていた制約を、最終SIMD groupの余剰laneで最終有効weight rowを再利用しstoreを抑止する`affine_qmv_fast_rows`で解消する。M5 Max・bf16でN=1/K=2560/8-bit/group64のQMVは11.37µsから8.22µs（1.38倍）、Qwen3.8-Flash-Nextの4-layer decode cycleはcontext 128で1.20倍、4096で1.19倍。変更経路は8 decode stepでbitwise-identicalだった。",
+  "whyItMatters": "AR decodeではN=1やN=4の狭い依存projectionが頻出するため、量子化kernelのdispatchをbits/group size/input alignmentだけでなくoutput tail shapeまで含めて設計する価値がある。独自MLX runtimeのQMV dispatchとM5 Ultra実機autotuneへすぐ取り込んで検証しやすい。",
+  "status": "TRY",
+  "tags": [
+    "mlx",
+    "metal",
+    "quantization",
+    "qmv",
+    "decode",
+    "m5"
+  ],
+  "sources": [
+    {
+      "title": "MLX PR #4516: Use the fast qmv kernel for affine outputs not divisible by 8",
+      "url": "https://github.com/ml-explore/mlx/pull/4516",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-15T08:16:33Z"
+    }
+  ]
+}
