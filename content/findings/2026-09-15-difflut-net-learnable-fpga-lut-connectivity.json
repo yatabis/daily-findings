@@ -1,0 +1,28 @@
+{
+  "id": "difflut-net-learnable-fpga-lut-connectivity",
+  "date": "2026-09-15",
+  "title": "DiffLUT-Netが6入力LUTの機能と接続を同時学習し、Verilogへ直接出力",
+  "summary": "9月8日に公開されたDiffLUT-Netは、FPGAの6入力LUTをニューラルネットワークの基本ノードとしてスクラッチから学習し、各LUTの64個の真理値表エントリと6入力ポートの接続元を同時に最適化する。学習後は真理値表と接続を離散化し、未使用ロジックを削減したうえで合成可能なVerilogへ直接エクスポートできる。公開実装には7種類のデータセット用インターフェースとcombinational/registered双方のVerilog出力が含まれる。",
+  "whyItMatters": "DLGN系で別々に進んでいた「learnable connectivity」と「FPGA-nativeなLUT表現・HDL出力」を一つの学習系に統合しており、固定ランダム配線とデプロイ変換という二つの構造的ボトルネックを同時に外す方向として重要。一方、現時点の実証は分類中心で、Transformer/Attentionや大規模系列モデルへのスケーリング、ASICやApple Siliconでの優位性は未確認なので、将来性評価は上げるが今すぐ試す段階ではない。",
+  "status": "WATCH",
+  "tags": [
+    "dlgn",
+    "difflut-net",
+    "fpga",
+    "learnable-connectivity",
+    "lut-network"
+  ],
+  "sources": [
+    {
+      "title": "DiffLUT-Net: Differentiable Training of FPGA LUT Networks with Learnable Connectivity",
+      "url": "https://arxiv.org/abs/2609.09254",
+      "publisher": "arXiv",
+      "publishedAt": "2026-09-08T15:00:50Z"
+    },
+    {
+      "title": "TUDa-HWAI/DiffLUT-Network",
+      "url": "https://github.com/TUDa-HWAI/DiffLUT-Network",
+      "publisher": "GitHub"
+    }
+  ]
+}
