@@ -1,0 +1,33 @@
+{
+  "id": "mlx-core-gated-delta-metal-primitive",
+  "date": "2026-09-15",
+  "title": "MLX coreにGated Delta Net専用Metal primitiveがmerge",
+  "summary": "MLX PR #4020がmainへmergeされ、Gated Delta Netのforward ruleをmx.fast.gated_delta_updateとしてcore primitive化した。Metal向けに逐次版、8x8 simdgroup_matrixを使うchunk-parallel版、16x16 NAX tile版を実装し、Qwen3.5-9B/35B-A3B/27Bで3経路のWikitext word perplexity一致を確認している。これは従来のruntime固有GDN kernel最適化から、複数runtimeが再利用できるMLX基盤機能への前進。ただしmlx-lm統合とmask対応はPR自身がfuture workとしており、最新stable v0.32.2にも未収録。",
+  "whyItMatters": "Qwen3.6級のhybrid/recurrent modelではGated Delta NetがApple Silicon性能の主要経路になる。core側に共通primitiveが入ったことでRapid-MLX等の個別fusionだけでなく、mlx-lmや他runtimeが同じ最適化基盤を使える可能性が高まった。一方、現時点ではM4 Pro 64GBの実model A/Bもmlx-lm integrationもないため試す段階ではない。次の評価トリガーはmlx-lm採用とstable MLX release、その上でQwen3.6-35B-A3Bのprefill/decode実測。",
+  "status": "WATCH",
+  "tags": [
+    "MLX",
+    "Apple-Silicon",
+    "GatedDeltaNet",
+    "Metal",
+    "NAX",
+    "Qwen"
+  ],
+  "relatedFindingIds": [
+    "mlx-gated-delta-simd-row-packing"
+  ],
+  "sources": [
+    {
+      "title": "MLX PR #4020: Adding metal kernels for the gated delta nets",
+      "url": "https://github.com/ml-explore/mlx/pull/4020",
+      "publisher": "GitHub",
+      "publishedAt": "2026-09-15T08:51:28Z"
+    },
+    {
+      "title": "MLX v0.32.2 release",
+      "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.2",
+      "publisher": "GitHub",
+      "publishedAt": "2026-08-25T10:58:55Z"
+    }
+  ]
+}
