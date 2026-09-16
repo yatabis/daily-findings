@@ -24,7 +24,8 @@
     "date": {
       "type": "string",
       "description": "旧形式の記録日。recordedAtを持たない既存Findingとの互換性のため残す。",
-      "format": "date"
+      "format": "date",
+      "deprecated": true
     },
     "title": {
       "type": "string",
