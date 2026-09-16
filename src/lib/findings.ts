@@ -10,6 +10,7 @@ export interface FindingSource {
 export interface Finding {
   id: string;
   date: string;
+  createdAt?: string;
   title: string;
   summary: string;
   whyItMatters?: string;
@@ -28,7 +29,10 @@ const findingModules = import.meta.glob<Finding>("/content/findings/*.json", {
 export async function getFindings(): Promise<Finding[]> {
   return Object.values(findingModules).sort((a, b) => {
     const byDate = b.date.localeCompare(a.date);
-    return byDate !== 0 ? byDate : a.title.localeCompare(b.title, "ja");
+    if (byDate !== 0) return byDate;
+
+    const byCreatedAt = (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
+    return byCreatedAt !== 0 ? byCreatedAt : a.title.localeCompare(b.title, "ja");
   });
 }
 
