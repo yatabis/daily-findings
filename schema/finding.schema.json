@@ -5,22 +5,26 @@
   "description": "保存・公開する価値があると判断した1件の発見・変化を表す。",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "date", "title", "summary", "status", "sources"],
+  "required": ["id", "title", "summary", "status", "sources"],
+  "oneOf": [
+    { "required": ["recordedAt"] },
+    { "required": ["date"] }
+  ],
   "properties": {
     "id": {
       "type": "string",
       "description": "Findingを一意に識別するID。",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
+    "recordedAt": {
+      "type": "string",
+      "description": "このFindingを観測・記録した日時。新規Findingではこちらを指定する。",
+      "format": "date-time"
+    },
     "date": {
       "type": "string",
-      "description": "このFindingを観測・記録した日。",
+      "description": "旧形式の記録日。recordedAtを持たない既存Findingとの互換性のため残す。",
       "format": "date"
-    },
-    "createdAt": {
-      "type": "string",
-      "description": "このFindingをdaily-findingsへ追加した日時。新規Findingでは指定する。",
-      "format": "date-time"
     },
     "title": {
       "type": "string",
