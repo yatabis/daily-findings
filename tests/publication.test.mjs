@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   SITE_URL, RSS_LIMIT, canonicalUrl, findingUrl, escapeXml,
-  createRss, createSitemap, feedFindings,
+  createRss, createSitemap, feedFindings, findingRecordDate,
 } from "../src/lib/publication.mjs";
 
 const finding = {
@@ -12,6 +12,11 @@ const finding = {
   tags: ["MLX", "A&B"], sources: [
     { title: "公式 & 資料", url: "https://example.com/?a=1&b=2" },
   ],
+};
+
+const withRecordedAt = (id, recordedAt) => {
+  const { date: _date, ...base } = finding;
+  return { ...base, id, recordedAt };
 };
 
 test("正式URLを正規化し、不正なIDを拒否する", () => {
@@ -36,10 +41,18 @@ test("RSSのGUIDは本文編集で変わらない", () => {
   assert.equal(guid(createRss([finding])), guid(createRss([{ ...finding, title: "変更後" }])));
 });
 
-test("RSSの日付は記録日のJST基準で表す", () => {
+test("旧形式の日付はJST 00:00として扱う", () => {
   const xml = createRss([finding]);
   assert(xml.includes("<pubDate>Sat, 12 Sep 2026 15:00:00 GMT</pubDate>"));
+  assert.equal(findingRecordDate(finding), "2026-09-13");
   assert(!xml.includes("lastBuildDate"));
+});
+
+test("recordedAtをRSSのpubDateとJST表示日に使う", () => {
+  const recorded = withRecordedAt("recorded", "2026-09-12T18:30:00Z");
+  const xml = createRss([recorded]);
+  assert(xml.includes("<pubDate>Sat, 12 Sep 2026 18:30:00 GMT</pubDate>"));
+  assert.equal(findingRecordDate(recorded), "2026-09-13");
 });
 
 test("RSSは新しい順の最新50件に限定する", () => {
@@ -52,11 +65,11 @@ test("RSSは新しい順の最新50件に限定する", () => {
   assert.equal((createRss(rows).match(/<item>/gu) ?? []).length, RSS_LIMIT);
 });
 
-test("同じ記録日では追加時刻の新しいFindingを先に並べる", () => {
+test("記録日時の新しいFindingを先に並べ、旧形式の日付へfallbackする", () => {
   const rows = [
     { ...finding, id: "legacy" },
-    { ...finding, id: "older", createdAt: "2026-09-13T01:00:00Z" },
-    { ...finding, id: "newer", createdAt: "2026-09-13T02:00:00Z" },
+    withRecordedAt("older", "2026-09-13T01:00:00Z"),
+    withRecordedAt("newer", "2026-09-13T02:00:00Z"),
   ];
   assert.deepEqual(feedFindings(rows).map((item) => item.id), ["newer", "older", "legacy"]);
 });
