@@ -1,7 +1,12 @@
 # daily-findings
 
-ChatGPTのウォッチタスクから、後で見返す価値がある差分だけを残す公開ログです。
+ChatGPTの各種ウォッチタスクで見つかった情報を蓄積し、Webサイトとして公開するためのリポジトリです。
 
-## 追加
+## 構成
 
-Findingは `content/findings/` に置きます。形式は `schema/finding.schema.json` を参照してください。
+- `content/findings/` — 公開するFinding
+- `schema/` — Findingのスキーマ
+
+## 開発
+
+未整備です。
