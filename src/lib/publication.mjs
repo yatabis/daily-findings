@@ -35,9 +35,17 @@ export function canonicalUrl(pathname) {
   return url.href;
 }
 
+export function compareFindingRecency(a, b) {
+  const byDate = b.date.localeCompare(a.date);
+  if (byDate !== 0) return byDate;
+
+  const byCreatedAt = (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
+  return byCreatedAt !== 0 ? byCreatedAt : a.id.localeCompare(b.id);
+}
+
 export function feedFindings(findings) {
   return [...findings]
-    .sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id))
+    .sort(compareFindingRecency)
     .slice(0, RSS_LIMIT);
 }
 
@@ -69,7 +77,7 @@ function findingHtml(finding) {
 
 export function createRss(findings) {
   const items = feedFindings(findings).map((finding) => {
-    // 原本には日付だけがあるため、記録日のJST 00:00として表す。原記事の公開日時ではない。
+    // pubDateは追加時刻ではなくFindingの記録日を表すため、JST 00:00として固定する。
     const recordedDate = new Date(`${finding.date}T00:00:00+09:00`);
     if (Number.isNaN(recordedDate.valueOf())) throw new Error(`記録日が不正です: ${finding.date}`);
     return `<item>
