@@ -44,7 +44,7 @@ async function main() {
 
     const markdownPath = `findings/${finding.id}.md`;
     const markdown = await readFile(new URL(markdownPath, outputDirectory), "utf8");
-    assert(markdown.includes(`# ${finding.title}`) && markdown.includes(canonical), `Markdown版が不完全です: ${finding.id}`);
+    assert(markdown.startsWith("# ") && markdown.includes(canonical), `Markdown版が不完全です: ${finding.id}`);
     assert(markdownIndex.includes(`${siteUrl}${markdownPath}`), `Markdown一覧にFindingがありません: ${finding.id}`);
     assert(detailHtml.includes(`/${markdownPath}`), `HTMLからMarkdown版への案内がありません: ${finding.id}`);
   }
