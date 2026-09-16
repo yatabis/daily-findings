@@ -1,4 +1,4 @@
-import { SITE_URL, SITE_TITLE, findingUrl } from "./publication.mjs";
+import { SITE_URL, SITE_TITLE, compareFindingRecency, findingUrl } from "./publication.mjs";
 
 function text(value) {
   return String(value)
@@ -53,11 +53,11 @@ export function createFindingMarkdown(finding, related = []) {
 }
 
 export function createFindingIndex(findings) {
-  const items = [...findings].sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+  const items = [...findings].sort(compareFindingRecency);
   return [
     `# ${SITE_TITLE} — 記録一覧`,
     "",
-    "記録日の新しい順です。各リンク先に概要・所感・情報源があります。",
+    "記録日の新しい順です。同じ日では追加時刻の新しいFindingを先に並べます。各リンク先に概要・所感・情報源があります。",
     "",
     ...items.map((finding) => `- [${inline(finding.title)}](${markdownUrl(finding.id)}): ${inline(finding.date)} / ${inline(finding.status)}${finding.tags?.length ? ` / ${finding.tags.map(inline).join(", ")}` : ""}`),
     "",
