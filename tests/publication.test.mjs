@@ -52,6 +52,15 @@ test("RSSは新しい順の最新50件に限定する", () => {
   assert.equal((createRss(rows).match(/<item>/gu) ?? []).length, RSS_LIMIT);
 });
 
+test("同じ記録日では追加時刻の新しいFindingを先に並べる", () => {
+  const rows = [
+    { ...finding, id: "legacy" },
+    { ...finding, id: "older", createdAt: "2026-09-13T01:00:00Z" },
+    { ...finding, id: "newer", createdAt: "2026-09-13T02:00:00Z" },
+  ];
+  assert.deepEqual(feedFindings(rows).map((item) => item.id), ["newer", "older", "legacy"]);
+});
+
 test("HTTP(S)以外の情報源URLはRSSにリンクとして出さない", () => {
   const xml = createRss([{ ...finding, sources: [{ title: "原題", url: "javascript:alert(1)" }] }]);
   assert(!xml.includes("javascript:"));
