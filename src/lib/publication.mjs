@@ -35,9 +35,38 @@ export function canonicalUrl(pathname) {
   return url.href;
 }
 
+/** 新形式のrecordedAtを優先し、旧形式のdateはJST 00:00として扱う。 */
+export function findingRecordedAt(finding) {
+  const value = finding.recordedAt ?? (finding.date ? `${finding.date}T00:00:00+09:00` : null);
+  if (!value) throw new Error(`Findingの記録日時がありません: ${finding.id ?? "<unknown>"}`);
+  const recordedAt = new Date(value);
+  if (Number.isNaN(recordedAt.valueOf())) throw new Error(`Findingの記録日時が不正です: ${value}`);
+  return recordedAt;
+}
+
+/** 記録日時を一覧表示用のJST日付へ変換する。 */
+export function findingRecordDate(finding) {
+  if (!finding.recordedAt && finding.date) return finding.date;
+
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(findingRecordedAt(finding)).map(({ type, value }) => [type, value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+export function compareFindingRecency(a, b) {
+  const byRecordedAt = findingRecordedAt(b).valueOf() - findingRecordedAt(a).valueOf();
+  return byRecordedAt !== 0 ? byRecordedAt : a.id.localeCompare(b.id);
+}
+
 export function feedFindings(findings) {
   return [...findings]
-    .sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id))
+    .sort(compareFindingRecency)
     .slice(0, RSS_LIMIT);
 }
 
@@ -57,7 +86,7 @@ function sourceHtml(source) {
 
 function findingHtml(finding) {
   const parts = [
-    `<p>${escapeXml(finding.status)} · 記録日 ${escapeXml(finding.date)}</p>`,
+    `<p>${escapeXml(finding.status)} · 記録日 ${escapeXml(findingRecordDate(finding))}</p>`,
     `<p>${escapeXml(finding.summary)}</p>`,
   ];
   if (finding.whyItMatters) {
@@ -69,14 +98,12 @@ function findingHtml(finding) {
 
 export function createRss(findings) {
   const items = feedFindings(findings).map((finding) => {
-    // 原本には日付だけがあるため、記録日のJST 00:00として表す。原記事の公開日時ではない。
-    const recordedDate = new Date(`${finding.date}T00:00:00+09:00`);
-    if (Number.isNaN(recordedDate.valueOf())) throw new Error(`記録日が不正です: ${finding.date}`);
+    const recordedAt = findingRecordedAt(finding);
     return `<item>
 <title>${escapeXml(finding.title)}</title>
 <link>${escapeXml(findingUrl(finding.id))}</link>
 <guid isPermaLink="false">daily-findings:${escapeXml(finding.id)}</guid>
-<pubDate>${recordedDate.toUTCString()}</pubDate>
+<pubDate>${recordedAt.toUTCString()}</pubDate>
 <description>${escapeXml(finding.summary)}</description>
 <content:encoded>${escapeXml(findingHtml(finding))}</content:encoded>
 ${(finding.tags ?? []).map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n")}
@@ -98,7 +125,7 @@ ${items.join("\n")}
 export function createSitemap(findings) {
   const urls = [SITE_URL, ...findings.map((finding) => findingUrl(finding.id)).sort()];
   if (urls.length > 50_000) throw new Error("サイトマップを50,000URL以下に分割する必要があります。");
-  // 記録日を更新日へ流用しない。実際の更新日時を管理していないためlastmodは出力しない。
+  // 記録日時を更新日時へ流用しないためlastmodは出力しない。
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((url) => `<url><loc>${escapeXml(url)}</loc></url>`).join("\n")}
