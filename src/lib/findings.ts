@@ -1,3 +1,5 @@
+import { compareFindingRecency, findingRecordDate } from "./publication.mjs";
+
 export type FindingStatus = "TRY" | "WATCH" | "HOLD";
 
 export interface FindingSource {
@@ -9,8 +11,8 @@ export interface FindingSource {
 
 export interface Finding {
   id: string;
-  date: string;
-  createdAt?: string;
+  recordedAt?: string;
+  date?: string;
   title: string;
   summary: string;
   whyItMatters?: string;
@@ -27,18 +29,16 @@ const findingModules = import.meta.glob<Finding>("/content/findings/*.json", {
 });
 
 export async function getFindings(): Promise<Finding[]> {
-  return Object.values(findingModules).sort((a, b) => {
-    const byDate = b.date.localeCompare(a.date);
-    if (byDate !== 0) return byDate;
-
-    const byCreatedAt = (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
-    return byCreatedAt !== 0 ? byCreatedAt : a.title.localeCompare(b.title, "ja");
-  });
+  return Object.values(findingModules).sort(compareFindingRecency);
 }
 
 export async function getFinding(id: string): Promise<Finding | undefined> {
   const findings = await getFindings();
   return findings.find((finding) => finding.id === id);
+}
+
+export function getFindingDate(finding: Finding): string {
+  return findingRecordDate(finding);
 }
 
 export function formatFindingDate(date: string): string {
