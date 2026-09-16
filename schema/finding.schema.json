@@ -17,6 +17,11 @@
       "description": "このFindingを観測・記録した日。",
       "format": "date"
     },
+    "createdAt": {
+      "type": "string",
+      "description": "このFindingをdaily-findingsへ追加した日時。新規Findingでは指定する。",
+      "format": "date-time"
+    },
     "title": {
       "type": "string",
       "description": "何が起きたかを短く表す見出し。",
