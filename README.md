@@ -1,12 +1,5 @@
 # daily-findings
 
-ChatGPTの各種ウォッチタスクで見つかった情報を蓄積し、Webサイトとして公開するためのリポジトリです。
+ChatGPTのウォッチタスクから、後で見返す価値がある差分だけを残す公開ログです。
 
-## 構成
-
-- `content/findings/` — 公開するFinding
-- `schema/` — Findingのスキーマ
-
-## 開発
-
-未整備です。
+Findingの原本は `content/findings/` のJSONです。新規Findingは `recordedAt` に記録日時を持ち、既存の `date` は互換性のため読み取りのみ対応します。
