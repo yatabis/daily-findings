@@ -1,14 +1,15 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FindingArticle from "../components/FindingArticle.astro";
-import { formatFindingDate, getFindings } from "../lib/findings";
+import { formatFindingDate, getFindingDate, getFindings } from "../lib/findings";
 
 const findings = await getFindings();
 const grouped = Array.from(
   findings.reduce((groups, finding) => {
-    const group = groups.get(finding.date) ?? [];
+    const date = getFindingDate(finding);
+    const group = groups.get(date) ?? [];
     group.push(finding);
-    groups.set(finding.date, group);
+    groups.set(date, group);
     return groups;
   }, new Map<string, typeof findings>()),
 );
