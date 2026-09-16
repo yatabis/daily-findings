@@ -1,5 +1,5 @@
 ---
-import { formatFindingDate, type Finding } from "../lib/findings";
+import { formatFindingDate, getFindingDate, type Finding } from "../lib/findings";
 import SourceList from "./SourceList.astro";
 
 interface Props {
@@ -12,6 +12,7 @@ const { finding, standalone = false, relatedFindings = [] } = Astro.props;
 const Heading = standalone ? "h1" : "h3";
 const SectionHeading = standalone ? "h2" : "h4";
 const titleId = `title-${finding.id}`;
+const recordDate = getFindingDate(finding);
 ---
 
 <article class="finding-article" id={`finding-${finding.id}`} aria-labelledby={titleId}>
@@ -19,7 +20,7 @@ const titleId = `title-${finding.id}`;
     <div class="finding-meta">
       <span class={`status status-${finding.status.toLowerCase()}`}>{finding.status}</span>
       {standalone && (
-        <time datetime={finding.date}>{formatFindingDate(finding.date)}</time>
+        <time datetime={recordDate}>{formatFindingDate(recordDate)}</time>
       )}
     </div>
     <Heading class="finding-title" id={titleId}>
