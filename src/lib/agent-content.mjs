@@ -1,4 +1,4 @@
-import { SITE_URL, SITE_TITLE, compareFindingRecency, findingUrl } from "./publication.mjs";
+import { SITE_URL, SITE_TITLE, compareFindingRecency, findingRecordDate, findingUrl } from "./publication.mjs";
 
 function text(value) {
   return String(value)
@@ -31,7 +31,7 @@ export function createFindingMarkdown(finding, related = []) {
   const lines = [
     `# ${inline(finding.title)}`,
     "",
-    `記録日: ${inline(finding.date)}`,
+    `記録日: ${inline(findingRecordDate(finding))}`,
     `分類: ${inline(finding.status)}`,
     `正規URL: ${findingUrl(finding.id)}`,
     "",
@@ -57,9 +57,9 @@ export function createFindingIndex(findings) {
   return [
     `# ${SITE_TITLE} — 記録一覧`,
     "",
-    "記録日の新しい順です。同じ日では追加時刻の新しいFindingを先に並べます。各リンク先に概要・所感・情報源があります。",
+    "記録日時の新しい順です。各リンク先に概要・所感・情報源があります。",
     "",
-    ...items.map((finding) => `- [${inline(finding.title)}](${markdownUrl(finding.id)}): ${inline(finding.date)} / ${inline(finding.status)}${finding.tags?.length ? ` / ${finding.tags.map(inline).join(", ")}` : ""}`),
+    ...items.map((finding) => `- [${inline(finding.title)}](${markdownUrl(finding.id)}): ${inline(findingRecordDate(finding))} / ${inline(finding.status)}${finding.tags?.length ? ` / ${finding.tags.map(inline).join(", ")}` : ""}`),
     "",
   ].join("\n");
 }
